@@ -18,10 +18,26 @@ android {
 ***REMOVED***
 ***REMOVED***
 
+repositories {
+    mavenCentral()
+***REMOVED***
+
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
+
+    //UI Compatibility Dependencies
     implementation 'androidx.appcompat:appcompat:1.0.0-beta01'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.recyclerview:recyclerview:1.0.0'
+
+    //Butterknife Dependencies
+    implementation 'com.jakewharton:butterknife:10.1.0'
+    annotationProcessor 'com.jakewharton:butterknife-compiler:10.1.0'
+
+    //Picasso Dependency
+    implementation 'com.squareup.picasso:picasso:2.71828'
+
+    // Test Dependencies
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
