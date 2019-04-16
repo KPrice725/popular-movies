@@ -7,11 +7,12 @@ import com.google.gson.annotations.SerializedName;
 public class Movie {
 
 ***REMOVED***
-        The MovieNetworkUtils calls to retrieve popular movie data will be initially deserialized
+        The RemoteMovieDataSource calls to retrieve popular movie data will be initially deserialized
         through the MovieJSONResult class via Gson, as per the TMDB returned JSON fields.  From there,
         the MovieJSONResult object's List<Movie> is populated from the returned
         "results" JSON array via Gson.
 ***REMOVED***
+    @SerializedName("id") private long id;
     @SerializedName("title") private String title;
     @SerializedName("original_title") private String originalTitle;
     @SerializedName("overview") private String overview;
@@ -22,7 +23,8 @@ public class Movie {
     private List<String> genres;
 
 
-    public Movie(String title, String originalTitle, String overview, String releaseDate, double userRating, String posterPath, List<Integer> genreIds) {
+    public Movie(long id, String title, String originalTitle, String overview, String releaseDate, double userRating, String posterPath, List<Integer> genreIds) {
+        this.id = id;
         this.title = title;
         this.originalTitle = originalTitle;
         this.overview = overview;
@@ -86,5 +88,13 @@ public class Movie {
 
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
+***REMOVED***
+
+    public long getId() {
+        return id;
+***REMOVED***
+
+    public void setId(long id) {
+        this.id = id;
 ***REMOVED***
 ***REMOVED***

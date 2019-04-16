@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName;
 public class MovieJSONResult {
 
 ***REMOVED***
-        The MovieNetworkUtils calls to retrieve popular movie data will be initially deserialized
+        The RemoteMovieDataSource calls to retrieve popular movie data will be initially deserialized
         through this class via Gson, as per the TMDB returned JSON fields.
 ***REMOVED***
     @SerializedName("page") private int page;
