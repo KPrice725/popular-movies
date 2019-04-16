@@ -2,16 +2,16 @@ package com.boxnotfound.popularmovies.model;
 
 import com.google.gson.annotations.SerializedName;
 
-***REMOVED***
+import java.util.List;
 
 public class Movie {
 
-***REMOVED***
+    /*
         The RemoteMovieDataSource calls to retrieve popular movie data will be initially deserialized
         through the MovieJSONResult class via Gson, as per the TMDB returned JSON fields.  From there,
         the MovieJSONResult object's List<Movie> is populated from the returned
         "results" JSON array via Gson.
-***REMOVED***
+    */
     @SerializedName("id") private long id;
     @SerializedName("title") private String title;
     @SerializedName("original_title") private String originalTitle;
@@ -32,69 +32,69 @@ public class Movie {
         this.userRating = userRating;
         this.posterPath = posterPath;
         this.genreIds = genreIds;
-***REMOVED***
+    }
 
     public String getTitle() {
         return title;
-***REMOVED***
+    }
 
     public void setTitle(String title) {
         this.title = title;
-***REMOVED***
+    }
 
     public String getOriginalTitle() {
         return originalTitle;
-***REMOVED***
+    }
 
     public void setOriginalTitle(String originalTitle) {
         this.originalTitle = originalTitle;
-***REMOVED***
+    }
 
     public String getOverview() {
         return overview;
-***REMOVED***
+    }
 
     public void setOverview(String overview) {
         this.overview = overview;
-***REMOVED***
+    }
 
     public String getReleaseDate() {
         return releaseDate;
-***REMOVED***
+    }
 
     public void setReleaseDate(String releaseDate) {
         this.releaseDate = releaseDate;
-***REMOVED***
+    }
 
     public double getUserRating() {
         return userRating;
-***REMOVED***
+    }
 
     public void setUserRating(double userRating) {
         this.userRating = userRating;
-***REMOVED***
+    }
 
     public String getPosterPath() {
         return posterPath;
-***REMOVED***
+    }
 
     public void setPosterPath(String posterPath) {
         this.posterPath = posterPath;
-***REMOVED***
+    }
 
     public List<Integer> getGenreIds() {
         return genreIds;
-***REMOVED***
+    }
 
     public void setGenreIds(List<Integer> genreIds) {
         this.genreIds = genreIds;
-***REMOVED***
+    }
 
     public long getId() {
         return id;
-***REMOVED***
+    }
 
     public void setId(long id) {
         this.id = id;
-***REMOVED***
-***REMOVED***
+    }
+}

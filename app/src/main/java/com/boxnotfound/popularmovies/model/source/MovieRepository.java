@@ -1,15 +1,15 @@
-***REMOVED***
+package com.boxnotfound.popularmovies.model.source;
 
-***REMOVED***
+import android.util.Log;
 
-***REMOVED***
-***REMOVED***
+import com.boxnotfound.popularmovies.model.Movie;
+import com.boxnotfound.popularmovies.model.SortParameters;
 
 import java.util.LinkedHashMap;
-***REMOVED***
+import java.util.List;
 import java.util.Map;
 
-***REMOVED***
+import androidx.annotation.NonNull;
 
 public class MovieRepository implements MovieDataSource {
 
@@ -22,53 +22,53 @@ public class MovieRepository implements MovieDataSource {
 
     private MovieRepository(@NonNull MovieDataSource remoteMovieDataSource) {
         this.remoteMovieDataSource = remoteMovieDataSource;
-***REMOVED***
+    }
 
     public static MovieRepository getInstance(@NonNull MovieDataSource remoteMovieDataSource) {
-***REMOVED***
+        if (INSTANCE == null) {
             INSTANCE = new MovieRepository(remoteMovieDataSource);
-    ***REMOVED***
-***REMOVED***
-***REMOVED***
+        }
+        return INSTANCE;
+    }
 
-***REMOVED***
-***REMOVED***
+    @Override
+    public void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback) {
         remoteMovieDataSource.getMoreMovies(sortParameter, pageNumber, new LoadMoviesCallback() {
-        ***REMOVED***
+            @Override
             public void onMoviesLoaded(@NonNull List<Movie> movies) {
-***REMOVED***
+                callback.onMoviesLoaded(movies);
                 cacheMovies(movies);
-        ***REMOVED***
+            }
 
-        ***REMOVED***
+            @Override
             public void onMoviesNotAvailable() {
-***REMOVED***
-        ***REMOVED***
-    ***REMOVED***);
-***REMOVED***
+                callback.onMoviesNotAvailable();
+            }
+        });
+    }
 
     private void cacheMovies(@NonNull List<Movie> movies) {
         if (cachedMovies == null) {
             cachedMovies = new LinkedHashMap<>();
-    ***REMOVED***
-        cacheMovies(movies);
+        }
+
         for (Movie movie : movies) {
             cachedMovies.put(movie.getId(), movie);
-    ***REMOVED***
-***REMOVED***
+        }
+    }
 
     public Movie getMovieById(final long id) throws IllegalArgumentException {
         if (cachedMovies.containsKey(id)) {
             return cachedMovies.get(id);
-    ***REMOVED*** else {
+        } else {
             Log.e(LOG_TAG, "Invalid movie id: " + id);
             throw new IllegalArgumentException("Invalid movie id: " + id);
-    ***REMOVED***
-***REMOVED***
+        }
+    }
 
     public void clearMovieCache() {
         if (cachedMovies != null) {
             cachedMovies.clear();
-    ***REMOVED***
-***REMOVED***
-***REMOVED***
+        }
+    }
+}

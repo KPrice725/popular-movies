@@ -1,13 +1,13 @@
 package com.boxnotfound.popularmovies.movies;
 
-***REMOVED***
-***REMOVED***
+import com.boxnotfound.popularmovies.model.Movie;
+import com.boxnotfound.popularmovies.model.SortParameters;
 import com.boxnotfound.popularmovies.model.source.MovieDataSource;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
 
-***REMOVED***
+import java.util.List;
 
-***REMOVED***
+import androidx.annotation.NonNull;
 
 public class MoviePresenter implements MovieContract.Presenter {
 
@@ -26,54 +26,54 @@ public class MoviePresenter implements MovieContract.Presenter {
         this.movieView = movieView;
 
         movieView.setPresenter(this);
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     public void start() {
         if (sortParameter == null) {
             sortParameter = SortParameters.POPULARITY;
-    ***REMOVED***
+        }
         if (firstLoad) {
             loadMovies();
             firstLoad = false;
-    ***REMOVED***
-***REMOVED***
+        }
+    }
 
-***REMOVED***
+    @Override
     public void loadMovies() {
         movieView.displayLoadingIndicator(true);
         movieRepository.getMoreMovies(sortParameter, pageNumber, new MovieDataSource.LoadMoviesCallback() {
-        ***REMOVED***
+            @Override
             public void onMoviesLoaded(@NonNull List<Movie> movies) {
                 movieView.displayLoadingIndicator(false);
                 movieView.displayNewMovies(movies);
                 pageNumber++;
-        ***REMOVED***
+            }
 
-        ***REMOVED***
+            @Override
             public void onMoviesNotAvailable() {
                 movieView.displayLoadingIndicator(false);
                 if (pageNumber == 1) {
                     movieView.displayNoMovies();
-            ***REMOVED***
+                }
                 movieView.displayLoadMoviesError();
-        ***REMOVED***
-    ***REMOVED***);
-***REMOVED***
+            }
+        });
+    }
 
-***REMOVED***
+    @Override
     public void setSortParameter(@NonNull final SortParameters sortParameter) {
         if (!this.sortParameter.equals(sortParameter)) {
             this.sortParameter = sortParameter;
             movieRepository.clearMovieCache();
             pageNumber = 1;
             loadMovies();
-    ***REMOVED***
-***REMOVED***
+        }
+    }
 
-***REMOVED***
+    @Override
     public void openMovieDetails(@NonNull final Movie requestedMovie) {
         final long id = requestedMovie.getId();
         movieView.displayMovieDetailActivity(id);
-***REMOVED***
-***REMOVED***
+    }
+}

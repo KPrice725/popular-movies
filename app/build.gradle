@@ -4,7 +4,7 @@ android {
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
-***REMOVED***
+    }
     compileSdkVersion 28
     defaultConfig {
         applicationId "com.boxnotfound.popularmovies"
@@ -13,18 +13,18 @@ android {
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-***REMOVED***
+    }
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-    ***REMOVED***
-***REMOVED***
-***REMOVED***
+        }
+    }
+}
 
 repositories {
     mavenCentral()
-***REMOVED***
+}
 
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
@@ -52,4 +52,4 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.1.0-alpha4'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0-alpha4'
-***REMOVED***
+}

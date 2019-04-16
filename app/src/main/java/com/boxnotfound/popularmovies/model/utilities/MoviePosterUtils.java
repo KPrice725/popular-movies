@@ -12,17 +12,17 @@ public class MoviePosterUtils {
 
     private MoviePosterUtils() {
         // prevent instantiation to limit usage to static method calls
-***REMOVED***
+    }
 
     public static String getSmallMoviePosterUrlPath(String posterPath) {
         return TMDB_IMAGE_BASE_URL + IMAGE_SIZE_SMALL + posterPath;
-***REMOVED***
+    }
 
     public static String getMediumMoviePosterUrlPath(String posterPath) {
         return TMDB_IMAGE_BASE_URL + IMAGE_SIZE_MEDIUM + posterPath;
-***REMOVED***
+    }
 
     public static String getLargeMoviePosterUrlPath(String posterPath) {
         return TMDB_IMAGE_BASE_URL + IMAGE_SIZE_LARGE + posterPath;
-***REMOVED***
-***REMOVED***
+    }
+}

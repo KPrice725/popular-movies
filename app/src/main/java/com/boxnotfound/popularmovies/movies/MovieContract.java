@@ -2,12 +2,12 @@ package com.boxnotfound.popularmovies.movies;
 
 import com.boxnotfound.popularmovies.BasePresenter;
 import com.boxnotfound.popularmovies.BaseView;
-***REMOVED***
-***REMOVED***
+import com.boxnotfound.popularmovies.model.Movie;
+import com.boxnotfound.popularmovies.model.SortParameters;
 
-***REMOVED***
+import java.util.List;
 
-***REMOVED***
+import androidx.annotation.NonNull;
 
 public interface MovieContract {
 
@@ -18,7 +18,7 @@ public interface MovieContract {
 
         void openMovieDetails(@NonNull Movie requestedMovie);
 
-***REMOVED***
+    }
 
     interface View extends BaseView<Presenter> {
 
@@ -31,5 +31,5 @@ public interface MovieContract {
         void displayLoadMoviesError();
 
         void displayMovieDetailActivity(final long movieId);
-***REMOVED***
-***REMOVED***
+    }
+}

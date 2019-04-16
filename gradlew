@@ -35,14 +35,14 @@ MAX_FD="maximum"
 
 warn () {
     echo "$*"
-***REMOVED***
+}
 
 die () {
     echo
     echo "$*"
     echo
     exit 1
-***REMOVED***
+}
 
 # OS specific support (must be 'true' or 'false').
 cygwin=false
@@ -158,7 +158,7 @@ fi
 save () {
     for i do printf %s\\n "$i" | sed "s/'/'\\\\''/g;1s/^/'/;\$s/\$/' \\\\/" ; done
     echo " "
-***REMOVED***
+}
 APP_ARGS=$(save "$@")
 
 # Collect all arguments for the java command, following the shell quoting and substitution rules

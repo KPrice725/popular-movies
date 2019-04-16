@@ -1,6 +1,6 @@
 package com.boxnotfound.popularmovies.movies;
 
-***REMOVED***
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -14,14 +14,14 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.boxnotfound.popularmovies.R;
-***REMOVED***
+import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
-***REMOVED***
+import java.util.List;
 
 public class MovieActivity extends AppCompatActivity implements MovieContract.View {
 
@@ -29,7 +29,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     MovieAdapter adapter;
 
-***REMOVED***
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
@@ -41,45 +41,45 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         MovieGridLayoutManager layoutManager = new MovieGridLayoutManager(this, 150);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     protected void onResume() {
         super.onResume();
         moviePresenter.start();
-***REMOVED***
+    }
 
     //TODO is this necessary since I'm instantiating the moviePresenter
     //in onCreate?
-***REMOVED***
+    @Override
     public void setPresenter(MovieContract.Presenter presenter) {
         moviePresenter = presenter;
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     public void displayLoadingIndicator(boolean isLoading) {
 
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     public void displayNewMovies(@NonNull List<Movie> movies) {
         adapter.addMovies(movies);
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     public void displayNoMovies() {
 
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     public void displayLoadMoviesError() {
 
-***REMOVED***
+    }
 
-***REMOVED***
+    @Override
     public void displayMovieDetailActivity(final long movieId) {
 
-***REMOVED***
+    }
 
     private class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
 
@@ -89,10 +89,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         public MovieAdapter(@NonNull final Context context) {
             this.context = context;
             movieList = new ArrayList<>();
-    ***REMOVED***
+        }
 
         @NonNull
-    ***REMOVED***
+        @Override
         public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
             Context parentContext = parent.getContext();
             LayoutInflater inflater = LayoutInflater.from(parentContext);
@@ -102,30 +102,30 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             ViewHolder viewHolder = new ViewHolder(movieView);
             return viewHolder;
 
-    ***REMOVED***
+        }
 
-    ***REMOVED***
+        @Override
         public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
             final Movie movie = movieList.get(position);
             // TODO
             String posterUrl = MoviePosterUtils.getSmallMoviePosterUrlPath(movie.getPosterPath());
             Picasso.get().load(posterUrl).into(viewHolder.posterImage);
-    ***REMOVED***
+        }
 
-    ***REMOVED***
+        @Override
         public int getItemCount() {
             if (movieList != null) {
                 return movieList.size();
-        ***REMOVED*** else {
+            } else {
                 return 0;
-        ***REMOVED***
-    ***REMOVED***
+            }
+        }
 
         public void addMovies(@NonNull final List<Movie> movies) {
             int currentIndex = getItemCount();
             movieList.addAll(movies);
             runOnUiThread(() -> notifyItemRangeInserted(currentIndex, movies.size()));
-    ***REMOVED***
+        }
 
         private class ViewHolder extends RecyclerView.ViewHolder {
 
@@ -134,14 +134,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 posterImage = itemView.findViewById(R.id.iv_movie_poster);
-        ***REMOVED***
-    ***REMOVED***
-***REMOVED***
+            }
+        }
+    }
 
-***REMOVED***
+    /*
         Solution to handling auto-setting the GridLayoutManager's spanCount
         https://stackoverflow.com/questions/26666143/recyclerview-gridlayoutmanager-how-to-auto-detect-span-count
-***REMOVED***
+    */
     private class MovieGridLayoutManager extends GridLayoutManager {
 
         private int columnWidth;
@@ -150,29 +150,29 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         public MovieGridLayoutManager(Context context, int colWidth) {
             super(context, 1);
             setColumnWidth(checkedColumnWidth(context, colWidth));
-    ***REMOVED***
+        }
 
         public MovieGridLayoutManager(Context context, int colWidth, int orientation, boolean reverseLayout) {
             super(context, 1, orientation, reverseLayout);
             setColumnWidth(checkedColumnWidth(context, colWidth));
-    ***REMOVED***
+        }
 
         private int checkedColumnWidth(Context context, int colWidth) {
             if (colWidth <= 0) {
                 colWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48,
                         context.getResources().getDisplayMetrics());
-        ***REMOVED***
+            }
             return colWidth;
-    ***REMOVED***
+        }
 
         public void setColumnWidth(int newColumnWidth) {
             if (newColumnWidth > 0 && newColumnWidth != columnWidth) {
                 columnWidth = newColumnWidth;
                 columnWidthChanged = true;
-        ***REMOVED***
-    ***REMOVED***
+            }
+        }
 
-    ***REMOVED***
+        @Override
         public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
             int width = getWidth();
             int height = getHeight();
@@ -180,14 +180,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 int totalSpace;
                 if (getOrientation() == RecyclerView.VERTICAL) {
                     totalSpace = width - getPaddingRight() - getPaddingLeft();
-            ***REMOVED*** else {
+                } else {
                     totalSpace = height - getPaddingTop() - getPaddingBottom();
-            ***REMOVED***
+                }
                 int spanCount = Math.max(1, totalSpace / columnWidth);
                 setSpanCount(spanCount);
                 columnWidthChanged = false;
-        ***REMOVED***
+            }
             super.onLayoutChildren(recycler, state);
-    ***REMOVED***
-***REMOVED***
-***REMOVED***
+        }
+    }
+}

@@ -1,11 +1,11 @@
-***REMOVED***
+package com.boxnotfound.popularmovies.model.source;
 
-***REMOVED***
-***REMOVED***
+import com.boxnotfound.popularmovies.model.Movie;
+import com.boxnotfound.popularmovies.model.SortParameters;
 
-***REMOVED***
+import java.util.List;
 
-***REMOVED***
+import androidx.annotation.NonNull;
 
 public interface MovieDataSource {
 
@@ -14,8 +14,8 @@ public interface MovieDataSource {
         void onMoviesLoaded(@NonNull List<Movie> movies);
 
         void onMoviesNotAvailable();
-***REMOVED***
+    }
 
     void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback);
 
-***REMOVED***
+}

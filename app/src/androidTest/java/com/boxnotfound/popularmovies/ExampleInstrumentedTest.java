@@ -23,5 +23,5 @@ public class ExampleInstrumentedTest {
         Context appContext = InstrumentationRegistry.getTargetContext();
 
         assertEquals("com.boxnotfound.popularmovies", appContext.getPackageName());
-***REMOVED***
-***REMOVED***
+    }
+}
