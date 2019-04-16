@@ -124,7 +124,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         public void addMovies(@NonNull final List<Movie> movies) {
             int currentIndex = getItemCount();
             movieList.addAll(movies);
-            notifyItemRangeInserted(currentIndex, movies.size());
+            runOnUiThread(() -> notifyItemRangeInserted(currentIndex, movies.size()));
     ***REMOVED***
 
         private class ViewHolder extends RecyclerView.ViewHolder {
@@ -133,8 +133,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
-
-                findViewById(R.id.iv_movie_poster);
+                posterImage = itemView.findViewById(R.id.iv_movie_poster);
         ***REMOVED***
     ***REMOVED***
 ***REMOVED***
