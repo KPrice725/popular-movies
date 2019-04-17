@@ -6,8 +6,9 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.TypedValue;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -25,7 +27,11 @@ import java.util.List;
 
 public class MovieActivity extends AppCompatActivity implements MovieContract.View {
 
+    private static final String LOG_TAG = MovieActivity.class.getSimpleName();
+
     private MovieContract.Presenter moviePresenter;
+
+    private MovieGridLayoutManager layoutManager;
 
     MovieAdapter adapter;
 
@@ -37,8 +43,9 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 MovieRepository.getInstance(RemoteMovieDataSource.getInstance()),
                 this);
         RecyclerView recyclerView = findViewById(R.id.rv_movies);
+        int screenWidthInPx = Resources.getSystem().getDisplayMetrics().widthPixels;
+        layoutManager = new MovieGridLayoutManager(this, 4, screenWidthInPx);
         adapter = new MovieAdapter(this);
-        MovieGridLayoutManager layoutManager = new MovieGridLayoutManager(this, 150);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
     }
@@ -106,10 +113,22 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
+            Log.d(LOG_TAG, "onBindViewHolder called!");
             final Movie movie = movieList.get(position);
-            // TODO
-            String posterUrl = MoviePosterUtils.getSmallMoviePosterUrlPath(movie.getPosterPath());
-            Picasso.get().load(posterUrl).into(viewHolder.posterImage);
+            String posterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
+            Picasso.get().load(posterUrl)
+                    .fit()
+                    .into(viewHolder.posterImage, new Callback() {
+                        @Override
+                        public void onSuccess() {
+                            Log.d(LOG_TAG, "Poster for " + movie.getTitle() + " successfully loaded!");
+                        }
+
+                        @Override
+                        public void onError(Exception e) {
+                            Log.d(LOG_TAG, "Poster for " + movie.getTitle() + " not loaded!");
+                        }
+                    });
         }
 
         @Override
@@ -124,6 +143,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         public void addMovies(@NonNull final List<Movie> movies) {
             int currentIndex = getItemCount();
             movieList.addAll(movies);
+            Log.d(LOG_TAG, "Current adapter movieList size: " + movieList.size());
             runOnUiThread(() -> notifyItemRangeInserted(currentIndex, movies.size()));
         }
 
@@ -134,60 +154,87 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             public ViewHolder(@NonNull View itemView) {
                 super(itemView);
                 posterImage = itemView.findViewById(R.id.iv_movie_poster);
+                posterImage.getLayoutParams().height = layoutManager.getTargetItemHeight();
+                posterImage.getLayoutParams().width = layoutManager.getTargetItemWidth();
             }
         }
     }
 
     /*
-        Solution to handling auto-setting the GridLayoutManager's spanCount
-        https://stackoverflow.com/questions/26666143/recyclerview-gridlayoutmanager-how-to-auto-detect-span-count
+        Create custom GridLayoutManager that dynamically provides target width and height
+        values to poster ImageViews in order to properly fit in the layout space,
+        given a set spanCount.
     */
     private class MovieGridLayoutManager extends GridLayoutManager {
 
-        private int columnWidth;
-        private boolean columnWidthChanged = true;
+        private int targetItemWidth;
+        private int targetItemHeight;
+        private int itemWidthTargetWindow = 270;
+        private static final double ITEM_HEIGHT_TO_WIDTH_ASPECT_RATION = 1.5;
+        private int maxSpanCount;
 
-        public MovieGridLayoutManager(Context context, int colWidth) {
-            super(context, 1);
-            setColumnWidth(checkedColumnWidth(context, colWidth));
+        public MovieGridLayoutManager(final Context context, final int maxSpanCount, final int screenWidthInPx) {
+            super(context, maxSpanCount); // spanCount must be set here, but will be adjusted shortly...
+            this.maxSpanCount = maxSpanCount;
+            setTargetItemWidth(screenWidthInPx);
+            setTargetItemHeight();
         }
 
-        public MovieGridLayoutManager(Context context, int colWidth, int orientation, boolean reverseLayout) {
-            super(context, 1, orientation, reverseLayout);
-            setColumnWidth(checkedColumnWidth(context, colWidth));
+        /*
+            Set the grid item's width and appropriate span count according
+            to the current screen width, the maximum span size requested
+            by the user.
+        */
+        private void setTargetItemWidth(final int screenWidthInPx) {
+            int totalWidth = getHorizontalLayoutSpace(screenWidthInPx);
+            int newSpanCount = calculateAppropriateSpanCount(totalWidth);
+            setSpanCount(newSpanCount);
+            targetItemWidth = totalWidth / newSpanCount;
         }
 
-        private int checkedColumnWidth(Context context, int colWidth) {
-            if (colWidth <= 0) {
-                colWidth = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, 48,
-                        context.getResources().getDisplayMetrics());
+        /*
+            With the item width now set, scale the height according to the constant
+            aspect ratio in order to maintain proper image size proportions.
+        */
+        private void setTargetItemHeight() {
+            targetItemHeight = (int) (targetItemWidth * ITEM_HEIGHT_TO_WIDTH_ASPECT_RATION);
+        }
+
+        /*
+            Determine the appropriate span size for the given screen width and a general
+            target width size.  If the calculated span exceeds the set max span size,
+            gradually scale the target width size.
+            TODO: This could likely be a little bit cleaner, look into improving this.
+        */
+        private int calculateAppropriateSpanCount(int totalWidth) {
+            if (totalWidth <= itemWidthTargetWindow) {
+                return 1;
             }
-            return colWidth;
-        }
-
-        public void setColumnWidth(int newColumnWidth) {
-            if (newColumnWidth > 0 && newColumnWidth != columnWidth) {
-                columnWidth = newColumnWidth;
-                columnWidthChanged = true;
-            }
-        }
-
-        @Override
-        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
-            int width = getWidth();
-            int height = getHeight();
-            if (columnWidthChanged && columnWidth > 0 && width > 0 && height > 0) {
-                int totalSpace;
-                if (getOrientation() == RecyclerView.VERTICAL) {
-                    totalSpace = width - getPaddingRight() - getPaddingLeft();
-                } else {
-                    totalSpace = height - getPaddingTop() - getPaddingBottom();
+            int count = 0;
+            int widthHolder = totalWidth;
+            while (widthHolder - itemWidthTargetWindow > 0) {
+                count++;
+                widthHolder -= itemWidthTargetWindow;
+                if (count > maxSpanCount) {
+                    count = 0;
+                    widthHolder = totalWidth;
+                    itemWidthTargetWindow = (int) (itemWidthTargetWindow * 1.25);
                 }
-                int spanCount = Math.max(1, totalSpace / columnWidth);
-                setSpanCount(spanCount);
-                columnWidthChanged = false;
+
             }
-            super.onLayoutChildren(recycler, state);
+            return count;
+        }
+
+        public int getTargetItemWidth() {
+            return targetItemWidth;
+        }
+
+        public int getTargetItemHeight() {
+            return targetItemHeight;
+        }
+
+        private int getHorizontalLayoutSpace(final int screenWidthInPx) {
+            return screenWidthInPx - getPaddingRight() - getPaddingLeft();
         }
     }
 }
