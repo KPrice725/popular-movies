@@ -12,6 +12,9 @@ import androidx.annotation.NonNull;
 public interface MovieContract {
 
     interface Presenter extends BasePresenter {
+
+        void refreshMovies();
+
         void loadMovies();
 
         void setSortParameter(@NonNull SortParameters sortParameter);

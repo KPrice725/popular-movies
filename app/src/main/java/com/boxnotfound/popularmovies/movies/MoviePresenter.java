@@ -17,9 +17,9 @@ public class MoviePresenter implements MovieContract.Presenter {
 
     private SortParameters sortParameter;
 
-    private int pageNumber = 1;
+    private static int pageNumber = 1;
 
-    private boolean firstLoad = true;
+    private static boolean firstLoad = true;
 
     public MoviePresenter(@NonNull MovieRepository movieRepository, @NonNull MovieContract.View movieView) {
         this.movieRepository = movieRepository;
@@ -36,7 +36,27 @@ public class MoviePresenter implements MovieContract.Presenter {
         if (firstLoad) {
             loadMovies();
             firstLoad = false;
+        } else {
+            refreshMovies();
         }
+    }
+
+    /*
+        Provides a cached list of movies if available.  Otherwise, request to load new Movies
+    */
+    @Override
+    public void refreshMovies() {
+        movieRepository.getCachedMovies(new MovieDataSource.LoadMoviesCallback() {
+            @Override
+            public void onMoviesLoaded(@NonNull List<Movie> movies) {
+                movieView.displayNewMovies(movies);
+            }
+
+            @Override
+            public void onMoviesNotAvailable() {
+                loadMovies();
+            }
+        });
     }
 
     @Override
@@ -47,7 +67,6 @@ public class MoviePresenter implements MovieContract.Presenter {
             public void onMoviesLoaded(@NonNull List<Movie> movies) {
                 movieView.displayLoadingIndicator(false);
                 movieView.displayNewMovies(movies);
-                pageNumber++;
             }
 
             @Override
@@ -59,6 +78,7 @@ public class MoviePresenter implements MovieContract.Presenter {
                 movieView.displayLoadMoviesError();
             }
         });
+        pageNumber++;
     }
 
     @Override
