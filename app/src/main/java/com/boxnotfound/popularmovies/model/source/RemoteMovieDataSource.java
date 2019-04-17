@@ -56,6 +56,12 @@ public class RemoteMovieDataSource implements MovieDataSource {
     }
 
     @Override
+    public void getCachedMovies(@NonNull LoadMoviesCallback callback) {
+        // Remote Source will never have cached movie data
+        callback.onMoviesNotAvailable();
+    }
+
+    @Override
     public void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback) {
         Request request = buildRequest(sortParameter, pageNumber);
         getJsonFromRequest(request, callback);

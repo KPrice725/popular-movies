@@ -5,6 +5,7 @@ import android.util.Log;
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;
 
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -18,7 +19,9 @@ public class MovieRepository implements MovieDataSource {
 
     private MovieDataSource remoteMovieDataSource;
 
-    private Map<Long, Movie> cachedMovies;
+    private Map<Long, Movie> cachedMovieMap;
+
+    private ArrayList<Movie> cachedMovieList;
 
     private MovieRepository(@NonNull MovieDataSource remoteMovieDataSource) {
         this.remoteMovieDataSource = remoteMovieDataSource;
@@ -29,6 +32,17 @@ public class MovieRepository implements MovieDataSource {
             INSTANCE = new MovieRepository(remoteMovieDataSource);
         }
         return INSTANCE;
+    }
+
+    @Override
+    public void getCachedMovies(@NonNull LoadMoviesCallback callback) {
+        if (cachedMovieList != null && cachedMovieList.size() > 0) {
+            Log.d(LOG_TAG, "Success: We have " + cachedMovieList.size() + " cached movies!");
+            callback.onMoviesLoaded(cachedMovieList);
+        } else {
+            Log.d(LOG_TAG, "Error: We don't have cached movies!");
+            callback.onMoviesNotAvailable();
+        }
     }
 
     @Override
@@ -48,18 +62,24 @@ public class MovieRepository implements MovieDataSource {
     }
 
     private void cacheMovies(@NonNull List<Movie> movies) {
-        if (cachedMovies == null) {
-            cachedMovies = new LinkedHashMap<>();
+        if (cachedMovieMap == null) {
+            cachedMovieMap = new LinkedHashMap<>();
+        }
+
+        if (cachedMovieList == null) {
+            cachedMovieList = new ArrayList<>();
         }
 
         for (Movie movie : movies) {
-            cachedMovies.put(movie.getId(), movie);
+            cachedMovieMap.put(movie.getId(), movie);
         }
+
+        cachedMovieList.addAll(movies);
     }
 
     public Movie getMovieById(final long id) throws IllegalArgumentException {
-        if (cachedMovies.containsKey(id)) {
-            return cachedMovies.get(id);
+        if (cachedMovieMap.containsKey(id)) {
+            return cachedMovieMap.get(id);
         } else {
             Log.e(LOG_TAG, "Invalid movie id: " + id);
             throw new IllegalArgumentException("Invalid movie id: " + id);
@@ -67,8 +87,12 @@ public class MovieRepository implements MovieDataSource {
     }
 
     public void clearMovieCache() {
-        if (cachedMovies != null) {
-            cachedMovies.clear();
+        if (cachedMovieMap != null) {
+            cachedMovieMap.clear();
+        }
+
+        if (cachedMovieList != null) {
+            cachedMovieList.clear();
         }
     }
 }
