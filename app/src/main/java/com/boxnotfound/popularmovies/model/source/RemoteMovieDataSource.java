@@ -30,7 +30,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
         and privacy requirements.  The end user should paste their
         own personal API key to this constant to utilize the TMDB functionality.
     */
-    private static final String API_KEY = "aba27a2ef6ffc72d6c249ef5e89b66d1";
+    private static final String API_KEY = "";
     private static final String API_KEY_PARAM = "api_key";
 
     //TODO: IMPLEMENT PAGE NUMBER HANDLING TO GET FURTHER INTO THE LIST
