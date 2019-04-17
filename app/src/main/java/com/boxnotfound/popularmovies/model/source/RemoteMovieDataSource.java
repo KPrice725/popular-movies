@@ -25,6 +25,8 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
     private static RemoteMovieDataSource INSTANCE = null;
 
+    private static OkHttpClient client;
+
     /*
         API_KEY deliberately blank to respect TMDB's API Key security
         and privacy requirements.  The end user should paste their
@@ -90,7 +92,9 @@ public class RemoteMovieDataSource implements MovieDataSource {
     }
 
     private static void getJsonFromRequest(@NonNull final Request request, @NonNull final LoadMoviesCallback callback) {
-        OkHttpClient client = new OkHttpClient();
+        if (client == null) {
+            initializeClient();
+        }
 
         client.newCall(request).enqueue(new Callback() {
             @Override
@@ -105,6 +109,18 @@ public class RemoteMovieDataSource implements MovieDataSource {
                 MovieJSONResult result = gson.fromJson(response.body().charStream(), MovieJSONResult.class);
                 List<Movie> movies = result.getResults();
                 callback.onMoviesLoaded(movies);
+            }
+        });
+    }
+
+    private static void initializeClient() {
+        client = new OkHttpClient();
+        Log.d(LOG_TAG, "default client maxRequests: " + client.dispatcher().getMaxRequests());
+        client.dispatcher().setMaxRequests(1);
+        client.dispatcher().setIdleCallback(new Runnable() {
+            @Override
+            public void run() {
+                client = null;
             }
         });
     }
