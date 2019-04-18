@@ -63,7 +63,17 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         for (int i = 0; i < menu.size(); i++) {
             MenuItem item = menu.getItem(i);
             if (item.isChecked()) {
-                onOptionsItemSelected(item);
+                int id = item.getItemId();
+                switch (id) {
+                    case R.id.sort_popularity:
+                        moviePresenter.setSortParameter(SortParameters.POPULARITY);
+                        break;
+                    case R.id.sort_rating:
+                        moviePresenter.setSortParameter(SortParameters.RATING);
+                        break;
+                    default:
+                        break;
+                }
             }
         }
         return true;

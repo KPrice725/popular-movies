@@ -85,10 +85,12 @@ public class MoviePresenter implements MovieContract.Presenter {
     public void setSortParameter(@NonNull final SortParameters sortParameter) {
         if (!this.sortParameter.equals(sortParameter)) {
             this.sortParameter = sortParameter;
-            movieRepository.clearMovieCache();
-            movieView.displayClearMovies();
-            pageNumber = 1;
-            loadMovies();
+            if (!firstLoad) {
+                movieRepository.clearMovieCache();
+                movieView.displayClearMovies();
+                pageNumber = 1;
+                loadMovies();
+            }
         }
     }
 
