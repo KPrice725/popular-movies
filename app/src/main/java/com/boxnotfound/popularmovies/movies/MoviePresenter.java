@@ -86,6 +86,7 @@ public class MoviePresenter implements MovieContract.Presenter {
         if (!this.sortParameter.equals(sortParameter)) {
             this.sortParameter = sortParameter;
             movieRepository.clearMovieCache();
+            movieView.displayClearMovies();
             pageNumber = 1;
             loadMovies();
         }

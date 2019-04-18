@@ -31,6 +31,8 @@ public interface MovieContract {
 
         void displayNoMovies();
 
+        void displayClearMovies();
+
         void displayLoadMoviesError();
 
         void displayMovieDetailActivity(final long movieId);
