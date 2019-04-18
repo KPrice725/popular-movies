@@ -10,12 +10,15 @@ import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import com.boxnotfound.popularmovies.R;
 import com.boxnotfound.popularmovies.model.Movie;
+import com.boxnotfound.popularmovies.model.SortParameters;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
@@ -55,6 +58,37 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_sort_movies, menu);
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            if (item.isChecked()) {
+                onOptionsItemSelected(item);
+            }
+        }
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (!item.isChecked()) {
+            item.setChecked(true);
+            int id = item.getItemId();
+            switch (id) {
+                case R.id.sort_popularity:
+                    moviePresenter.setSortParameter(SortParameters.POPULARITY);
+                    return true;
+                case R.id.sort_rating:
+                    moviePresenter.setSortParameter(SortParameters.RATING);
+                    return true;
+                default:
+                    return super.onOptionsItemSelected(item);
+            }
+        } else {
+            return super.onOptionsItemSelected(item);
+        }
+    }
+    @Override
     protected void onResume() {
         super.onResume();
         readyToLoad = false;
@@ -82,6 +116,12 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     @Override
     public void displayNoMovies() {
         readyToLoad = true;
+    }
+
+    @Override
+    public void displayClearMovies() {
+        readyToLoad = true;
+        adapter.clearMovies();
     }
 
     @Override
@@ -152,6 +192,13 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             movieList.addAll(movies);
             Log.d(LOG_TAG, "Current adapter movieList size: " + movieList.size());
             runOnUiThread(() -> notifyItemRangeInserted(currentIndex, movies.size()));
+        }
+
+        public void clearMovies() {
+            if (movieList != null) {
+                movieList.clear();
+                notifyDataSetChanged();
+            }
         }
 
         private class ViewHolder extends RecyclerView.ViewHolder {
