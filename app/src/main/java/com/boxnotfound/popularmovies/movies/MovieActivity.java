@@ -32,6 +32,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private static final String LOG_TAG = MovieActivity.class.getSimpleName();
 
+    private static final String SORT_MENU_ITEM_SELECTED = "sort_menu_item_selected";
+
+    private int selected = -1;
+
     private MovieContract.Presenter moviePresenter;
 
     private MovieGridLayoutManager layoutManager;
@@ -55,27 +59,42 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addOnScrollListener(new MovieScrollListener());
+
+        if (savedInstanceState != null) {
+            selected = savedInstanceState.getInt(SORT_MENU_ITEM_SELECTED);
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.menu_sort_movies, menu);
-        for (int i = 0; i < menu.size(); i++) {
-            MenuItem item = menu.getItem(i);
-            if (item.isChecked()) {
-                int id = item.getItemId();
-                switch (id) {
-                    case R.id.sort_popularity:
-                        moviePresenter.setSortParameter(SortParameters.POPULARITY);
-                        break;
-                    case R.id.sort_rating:
-                        moviePresenter.setSortParameter(SortParameters.RATING);
-                        break;
-                    default:
-                        break;
+        int id = -1;
+        if (selected != -1) {
+            id = selected;
+        } else {
+            for (int i = 0; i < menu.size(); i++) {
+                MenuItem item = menu.getItem(i);
+                if (item.isChecked()) {
+                    id = item.getItemId();
                 }
             }
         }
+
+        switch (id) {
+            case R.id.sort_popularity:
+                menu.findItem(id).setChecked(true);
+                selected = id;
+                moviePresenter.setSortParameter(SortParameters.POPULARITY);
+                break;
+            case R.id.sort_rating:
+                menu.findItem(id).setChecked(true);
+                selected = id;
+                moviePresenter.setSortParameter(SortParameters.RATING);
+                break;
+            default:
+                break;
+        }
+
         return true;
     }
 
@@ -86,9 +105,11 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             int id = item.getItemId();
             switch (id) {
                 case R.id.sort_popularity:
+                    selected = id;
                     moviePresenter.setSortParameter(SortParameters.POPULARITY);
                     return true;
                 case R.id.sort_rating:
+                    selected = id;
                     moviePresenter.setSortParameter(SortParameters.RATING);
                     return true;
                 default:
@@ -103,6 +124,12 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         super.onResume();
         readyToLoad = false;
         moviePresenter.start();
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        outState.putInt(SORT_MENU_ITEM_SELECTED, selected);
+        super.onSaveInstanceState(outState);
     }
 
     //TODO is this necessary since I'm instantiating the moviePresenter
