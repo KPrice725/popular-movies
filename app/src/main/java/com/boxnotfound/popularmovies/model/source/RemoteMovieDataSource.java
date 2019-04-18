@@ -27,12 +27,6 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
     private static OkHttpClient client;
 
-    /*
-        API_KEY deliberately blank to respect TMDB's API Key security
-        and privacy requirements.  The end user should paste their
-        own personal API key to this constant to utilize the TMDB functionality.
-    */
-    private static final String API_KEY = "";
     private static final String API_KEY_PARAM = "api_key";
 
     //TODO: IMPLEMENT PAGE NUMBER HANDLING TO GET FURTHER INTO THE LIST
@@ -73,7 +67,8 @@ public class RemoteMovieDataSource implements MovieDataSource {
             Before we execute this call, we need to ensure that the developer has set their API
             Key, since this constant will be blank by default in the GitHub Repository.
         */
-        if (API_KEY.equals("")) {
+        String apiKey = MovieApiKeyInjector.inject();
+        if (apiKey.equals("")) {
             Log.e(LOG_TAG, "Error: No API Key Set. Developer needs to set TMDB API Key.");
             return null;
         }
@@ -85,7 +80,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
         String baseUrl = getBaseUrlFromSortParameter(sort);
 
         HttpUrl.Builder builder = HttpUrl.parse(baseUrl).newBuilder()
-                .addQueryParameter(API_KEY_PARAM, API_KEY)
+                .addQueryParameter(API_KEY_PARAM, apiKey)
                 .addQueryParameter(PAGE_PARAM, String.valueOf(pageNumber));
 
         String url = builder.build().toString();
