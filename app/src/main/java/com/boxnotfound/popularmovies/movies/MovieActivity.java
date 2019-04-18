@@ -123,7 +123,8 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             final Movie movie = movieList.get(position);
             String posterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
             Picasso.get().load(posterUrl)
-                    .fit()
+                    .resize(layoutManager.getTargetItemWidth(), layoutManager.getTargetItemHeight())
+                    .centerCrop()
                     .into(viewHolder.posterImage, new Callback() {
                         @Override
                         public void onSuccess() {
