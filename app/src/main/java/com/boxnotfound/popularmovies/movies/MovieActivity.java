@@ -33,7 +33,9 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private MovieGridLayoutManager layoutManager;
 
-    MovieAdapter adapter;
+    private MovieAdapter adapter;
+
+    private boolean readyToLoad = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,11 +50,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         adapter = new MovieAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.addOnScrollListener(new MovieScrollListener());
     }
 
     @Override
     protected void onResume() {
         super.onResume();
+        readyToLoad = false;
         moviePresenter.start();
     }
 
@@ -71,16 +76,17 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     @Override
     public void displayNewMovies(@NonNull List<Movie> movies) {
         adapter.addMovies(movies);
+        readyToLoad = true;
     }
 
     @Override
     public void displayNoMovies() {
-
+        readyToLoad = true;
     }
 
     @Override
     public void displayLoadMoviesError() {
-
+        readyToLoad = true;
     }
 
     @Override
@@ -235,6 +241,37 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
         private int getHorizontalLayoutSpace(final int screenWidthInPx) {
             return screenWidthInPx - getPaddingRight() - getPaddingLeft();
+        }
+    }
+
+    /*
+        Detects when user has scrolled to the bottom portion of the recyclerview,
+        after which a call to load more movies is executed to keep continuous scrolling.
+    */
+    private class MovieScrollListener extends RecyclerView.OnScrollListener {
+        @Override
+        public void onScrolled(@NonNull RecyclerView recyclerView, int dx, int dy) {
+            super.onScrolled(recyclerView, dx, dy);
+
+            if (dy > 0) {
+                int currentItemCount = recyclerView.getChildCount();
+                int totalItemCount = layoutManager.getItemCount();
+                int previousItemCount = layoutManager.findFirstVisibleItemPosition();
+                int spanCount = layoutManager.getSpanCount();
+
+                if (readyToLoad) {
+                    if ((currentItemCount + previousItemCount + spanCount) >= totalItemCount) {
+                        readyToLoad = false;
+                        moviePresenter.loadMovies();
+                    }
+                }
+
+            }
+        }
+
+        @Override
+        public void onScrollStateChanged(@NonNull RecyclerView recyclerView, int newState) {
+            super.onScrollStateChanged(recyclerView, newState);
         }
     }
 }
