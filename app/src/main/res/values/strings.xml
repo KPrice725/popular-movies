@@ -1,5 +1,9 @@
 <resources>
     <string name="app_name">Popular Movies</string>
+    <string name="content_description_connection_error">Connection Error</string>
+    <string name="message_no_movies">Connection Error\nNo Movies To Display</string>
+    <string name="message_connection_error">Connection Error: Unable to load movies</string>
+    <string name="retry">RETRY</string>
     <string name="sort_most_popular">Most Popular</string>
     <string name="sort_highest_rated">Highest Rated</string>
 </resources>

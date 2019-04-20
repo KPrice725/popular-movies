@@ -15,6 +15,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 
 import com.boxnotfound.popularmovies.R;
 import com.boxnotfound.popularmovies.model.Movie;
@@ -22,11 +24,15 @@ import com.boxnotfound.popularmovies.model.SortParameters;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 public class MovieActivity extends AppCompatActivity implements MovieContract.View {
 
@@ -44,14 +50,19 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private boolean readyToLoad = true;
 
+    @BindView(R.id.rv_movies) RecyclerView recyclerView;
+    @BindView(R.id.display_error) RelativeLayout errorView;
+    @BindView(R.id.pb_load_movies) ProgressBar progressBar;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
+        ButterKnife.bind(this);
         moviePresenter = new MoviePresenter(
                 MovieRepository.getInstance(RemoteMovieDataSource.getInstance()),
                 this);
-        RecyclerView recyclerView = findViewById(R.id.rv_movies);
+        recyclerView = findViewById(R.id.rv_movies);
         int screenWidthInPx = Resources.getSystem().getDisplayMetrics().widthPixels;
         layoutManager = new MovieGridLayoutManager(this, 4, screenWidthInPx);
         adapter = new MovieAdapter(this);
@@ -141,17 +152,23 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayLoadingIndicator(boolean isLoading) {
-
+        if (isLoading) {
+            progressBar.setVisibility(View.VISIBLE);
+        } else {
+            progressBar.setVisibility(View.INVISIBLE);
+        }
     }
 
     @Override
     public void displayNewMovies(@NonNull List<Movie> movies) {
         adapter.addMovies(movies);
+        runOnUiThread(this::displayMovieView);
         readyToLoad = true;
     }
 
     @Override
     public void displayNoMovies() {
+        runOnUiThread(this::displayErrorView);
         readyToLoad = true;
     }
 
@@ -163,12 +180,24 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayLoadMoviesError() {
+        Snackbar.make(errorView, R.string.message_connection_error, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.retry, v -> moviePresenter.loadMovies()).show();
         readyToLoad = true;
     }
 
     @Override
     public void displayMovieDetailActivity(final long movieId) {
 
+    }
+
+    private void displayMovieView() {
+        errorView.setVisibility(View.INVISIBLE);
+        recyclerView.setVisibility(View.VISIBLE);
+    }
+
+    private void displayErrorView() {
+        recyclerView.setVisibility(View.INVISIBLE);
+        errorView.setVisibility(View.VISIBLE);
     }
 
     private class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
