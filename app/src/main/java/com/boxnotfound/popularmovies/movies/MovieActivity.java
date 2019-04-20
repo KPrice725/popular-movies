@@ -345,7 +345,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             }
             int count = 0;
             int widthHolder = totalWidth;
-            while (widthHolder - itemWidthTargetWindow > 0) {
+            while (widthHolder - itemWidthTargetWindow >= 0) {
                 count++;
                 widthHolder -= itemWidthTargetWindow;
                 if (count > maxSpanCount) {
