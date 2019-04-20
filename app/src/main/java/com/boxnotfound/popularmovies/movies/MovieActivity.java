@@ -276,6 +276,8 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 posterImage = itemView.findViewById(R.id.iv_movie_poster);
                 posterImage.getLayoutParams().height = layoutManager.getTargetItemHeight();
                 posterImage.getLayoutParams().width = layoutManager.getTargetItemWidth();
+                posterImage.setPadding(layoutManager.getTargetItemHorizontalPadding(),
+                        0, layoutManager.getTargetItemHorizontalPadding(), 0);
             }
         }
     }
@@ -289,7 +291,8 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
         private int targetItemWidth;
         private int targetItemHeight;
-        private int itemWidthTargetWindow = 270;
+        private int targetItemHorizontalPadding;
+        private int itemWidthTargetWindow = 360;
         private static final double ITEM_HEIGHT_TO_WIDTH_ASPECT_RATION = 1.5;
         private int maxSpanCount;
 
@@ -298,6 +301,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             this.maxSpanCount = maxSpanCount;
             setTargetItemWidth(screenWidthInPx);
             setTargetItemHeight();
+            setTargetItemHorizontalPadding(screenWidthInPx);
         }
 
         /*
@@ -318,6 +322,15 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         */
         private void setTargetItemHeight() {
             targetItemHeight = (int) (targetItemWidth * ITEM_HEIGHT_TO_WIDTH_ASPECT_RATION);
+        }
+
+        private void setTargetItemHorizontalPadding(final int screenWidthInPx) {
+            int screenSizeRemaining = screenWidthInPx - (getTargetItemWidth() * getSpanCount());
+            if (screenSizeRemaining == 0) {
+                targetItemHorizontalPadding = 0;
+            } else {
+                targetItemHorizontalPadding = 2 / (screenWidthInPx - (getTargetItemWidth() * getSpanCount()));
+            }
         }
 
         /*
@@ -351,6 +364,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
         public int getTargetItemHeight() {
             return targetItemHeight;
+        }
+
+        public int getTargetItemHorizontalPadding() {
+            return targetItemHorizontalPadding;
         }
 
         private int getHorizontalLayoutSpace(final int screenWidthInPx) {
