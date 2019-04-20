@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
 import com.boxnotfound.popularmovies.R;
+import com.boxnotfound.popularmovies.detail.DetailActivity;
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
@@ -39,6 +41,8 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     private static final String LOG_TAG = MovieActivity.class.getSimpleName();
 
     private static final String SORT_MENU_ITEM_SELECTED = "sort_menu_item_selected";
+
+    public static final String EXTRA_MOVIE_ID = "extra_movie_id";
 
     private int selected = -1;
 
@@ -187,7 +191,9 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayMovieDetailActivity(final long movieId) {
-
+        Intent intent = new Intent(MovieActivity.this, DetailActivity.class);
+        intent.putExtra(EXTRA_MOVIE_ID, movieId);
+        startActivity(intent);
     }
 
     private void displayMovieView() {
@@ -267,7 +273,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             }
         }
 
-        private class ViewHolder extends RecyclerView.ViewHolder {
+        private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
             private ImageView posterImage;
 
@@ -278,6 +284,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 posterImage.getLayoutParams().width = layoutManager.getTargetItemWidth();
                 posterImage.setPadding(layoutManager.getTargetItemHorizontalPadding(),
                         0, layoutManager.getTargetItemHorizontalPadding(), 0);
+
+                itemView.setOnClickListener(this);
+            }
+
+            @Override
+            public void onClick(View v) {
+                int index = getAdapterPosition();
+                moviePresenter.openMovieDetails(movieList.get(index));
             }
         }
     }
