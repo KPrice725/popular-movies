@@ -72,8 +72,9 @@ public class MoviePresenter implements MovieContract.Presenter {
             @Override
             public void onMoviesNotAvailable() {
                 movieView.displayLoadingIndicator(false);
-                if (pageNumber == 1) {
+                if (movieRepository.getCachedMoviesSize() == 0) {
                     movieView.displayNoMovies();
+                    pageNumber = 1;
                 }
                 movieView.displayLoadMoviesError();
             }

@@ -45,6 +45,14 @@ public class MovieRepository implements MovieDataSource {
         }
     }
 
+    public int getCachedMoviesSize() {
+        if (cachedMovieList != null) {
+            return cachedMovieList.size();
+        } else {
+            return 0;
+        }
+    }
+
     @Override
     public void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback) {
         remoteMovieDataSource.getMoreMovies(sortParameter, pageNumber, new LoadMoviesCallback() {
