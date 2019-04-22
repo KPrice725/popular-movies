@@ -19,11 +19,12 @@ public class Movie {
     @SerializedName("release_date") private String releaseDate;
     @SerializedName("vote_average") private double userRating;
     @SerializedName("poster_path") private String posterPath;
+    @SerializedName("backdrop_path") private String backdropPosterPath;
     @SerializedName("genre_ids") private List<Integer> genreIds;
     private List<String> genres;
 
 
-    public Movie(long id, String title, String originalTitle, String overview, String releaseDate, double userRating, String posterPath, List<Integer> genreIds) {
+    public Movie(long id, String title, String originalTitle, String overview, String releaseDate, double userRating, String posterPath, String backdropPosterPath, List<Integer> genreIds) {
         this.id = id;
         this.title = title;
         this.originalTitle = originalTitle;
@@ -31,6 +32,7 @@ public class Movie {
         this.releaseDate = releaseDate;
         this.userRating = userRating;
         this.posterPath = posterPath;
+        this.backdropPosterPath = backdropPosterPath;
         this.genreIds = genreIds;
     }
 
@@ -96,5 +98,13 @@ public class Movie {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public String getBackdropPosterPath() {
+        return backdropPosterPath;
+    }
+
+    public void setBackdropPosterPath(String backdropPosterPath) {
+        this.backdropPosterPath = backdropPosterPath;
     }
 }
