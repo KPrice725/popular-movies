@@ -1,8 +1,16 @@
 package com.boxnotfound.popularmovies.detail;
 
+import android.util.SparseArray;
+
+import com.boxnotfound.popularmovies.model.Genre;
 import com.boxnotfound.popularmovies.model.Movie;
+import com.boxnotfound.popularmovies.model.source.GenreDataSource;
+import com.boxnotfound.popularmovies.model.source.GenreRepository;
 import com.boxnotfound.popularmovies.model.source.MovieRepository;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import androidx.annotation.NonNull;
 
@@ -10,12 +18,18 @@ public class DetailPresenter implements DetailContract.Presenter {
 
     private MovieRepository movieRepository;
 
+    private GenreRepository genreRepository;
+
     private DetailContract.View detailView;
 
     private long movieId;
 
-    public DetailPresenter(@NonNull final MovieRepository movieRepository, @NonNull final DetailContract.View detailView, final long movieId) {
+    public DetailPresenter(@NonNull final MovieRepository movieRepository,
+                           @NonNull final GenreRepository genreRepository,
+                           @NonNull final DetailContract.View detailView,
+                           final long movieId) {
         this.movieRepository = movieRepository;
+        this.genreRepository = genreRepository;
         this.detailView = detailView;
         this.movieId = movieId;
 
@@ -25,14 +39,25 @@ public class DetailPresenter implements DetailContract.Presenter {
 
     @Override
     public void start() {
-        loadMovie(movieId);
+        detailView.displayLoadingIndicator(true);
+        genreRepository.loadGenres(new GenreDataSource.LoadGenresCallback() {
+            @Override
+            public void onGenresLoaded(@NonNull SparseArray<Genre> genreMap) {
+                loadMovie(movieId, genreMap);
+            }
+
+            @Override
+            public void onGenresNotAvailable() {
+                loadMovie(movieId, new SparseArray<>());
+            }
+        });
     }
 
     @Override
-    public void loadMovie(long movieId) {
+    public void loadMovie(long movieId, @NonNull SparseArray<Genre> genreMap) {
         Movie movie = movieRepository.getMovieById(movieId);
-        detailView.displayLoadingIndicator(true);
         if (movie != null) {
+            detailView.displayLoadingIndicator(false);
             detailView.displayMovieTitle(movie.getTitle());
             detailView.displayMovieOriginalTitle(movie.getOriginalTitle());
             detailView.displayMovieOverview(movie.getOverview());
@@ -42,8 +67,18 @@ public class DetailPresenter implements DetailContract.Presenter {
             String movieBackdropPosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getBackdropPosterPath());
             detailView.displayMovieBackdropPoster(movieBackdropPosterUrl);
 
-            //TODO implement genre id to string conversion methods
+            List<String> genresNames = new ArrayList<>();
+            if (genreMap.size() > 0) {
+                List<Integer> genreIds = movie.getGenreIds();
+                for (int i = 0; i < genreIds.size(); i++) {
+                    int genreId = genreIds.get(i);
+                    Genre genre = genreMap.get(genreId);
+                    genresNames.add(genre.getName());
+                }
+            }
+            detailView.displayMovieGenres(genresNames);
         } else {
+            detailView.displayLoadingIndicator(false);
             detailView.displayNoMovieDetails();
         }
     }

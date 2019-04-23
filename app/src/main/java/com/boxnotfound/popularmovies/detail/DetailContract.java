@@ -1,7 +1,10 @@
 package com.boxnotfound.popularmovies.detail;
 
+import android.util.SparseArray;
+
 import com.boxnotfound.popularmovies.BasePresenter;
 import com.boxnotfound.popularmovies.BaseView;
+import com.boxnotfound.popularmovies.model.Genre;
 
 import java.util.List;
 
@@ -11,7 +14,7 @@ public interface DetailContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadMovie(final long movieId);
+        void loadMovie(final long movieId, @NonNull final SparseArray<Genre> genreMap);
 
     }
 
