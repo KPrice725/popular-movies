@@ -21,8 +21,6 @@ public class Movie {
     @SerializedName("poster_path") private String posterPath;
     @SerializedName("backdrop_path") private String backdropPosterPath;
     @SerializedName("genre_ids") private List<Integer> genreIds;
-    private List<String> genres;
-
 
     public Movie(long id, String title, String originalTitle, String overview, String releaseDate, double userRating, String posterPath, String backdropPosterPath, List<Integer> genreIds) {
         this.id = id;
