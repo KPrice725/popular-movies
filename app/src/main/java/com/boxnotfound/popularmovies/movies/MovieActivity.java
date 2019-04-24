@@ -54,6 +54,8 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private boolean readyToLoad = true;
 
+    private Snackbar errorSnackbar;
+
     @BindView(R.id.rv_movies) RecyclerView recyclerView;
     @BindView(R.id.display_error) RelativeLayout errorView;
     @BindView(R.id.pb_load_movies) ProgressBar progressBar;
@@ -74,6 +76,9 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
         recyclerView.addOnScrollListener(new MovieScrollListener());
+
+        errorSnackbar = Snackbar.make(errorView, R.string.message_connection_error, Snackbar.LENGTH_INDEFINITE)
+                .setAction(R.string.retry, v -> moviePresenter.loadMovies());
 
         if (savedInstanceState != null) {
             selected = savedInstanceState.getInt(SORT_MENU_ITEM_SELECTED);
@@ -165,6 +170,9 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayNewMovies(@NonNull List<Movie> movies) {
+        if (errorSnackbar.isShown()) {
+            errorSnackbar.dismiss();
+        }
         adapter.addMovies(movies);
         runOnUiThread(this::displayMovieView);
         readyToLoad = true;
@@ -184,8 +192,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayLoadMoviesError() {
-        Snackbar.make(errorView, R.string.message_connection_error, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.retry, v -> moviePresenter.loadMovies()).show();
+        errorSnackbar.show();
         readyToLoad = true;
     }
 
@@ -386,6 +393,15 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
         private int getHorizontalLayoutSpace(final int screenWidthInPx) {
             return screenWidthInPx - getPaddingRight() - getPaddingLeft();
+        }
+
+        @Override
+        public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
+            try {
+                super.onLayoutChildren(recycler, state);
+            } catch (IndexOutOfBoundsException e) {
+                Log.e(LOG_TAG, "onLayoutChildren error: " + e.getMessage());
+            }
         }
     }
 
