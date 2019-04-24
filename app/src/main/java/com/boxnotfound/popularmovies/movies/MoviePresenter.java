@@ -17,9 +17,9 @@ public class MoviePresenter implements MovieContract.Presenter {
 
     private SortParameters sortParameter;
 
-    private static int pageNumber = 1;
-
     private static boolean firstLoad = true;
+
+    private static boolean newSortSelected = true;
 
     public MoviePresenter(@NonNull MovieRepository movieRepository, @NonNull MovieContract.View movieView) {
         this.movieRepository = movieRepository;
@@ -36,6 +36,7 @@ public class MoviePresenter implements MovieContract.Presenter {
         if (firstLoad) {
             loadMovies();
             firstLoad = false;
+            newSortSelected = false;
         } else {
             refreshMovies();
         }
@@ -62,7 +63,7 @@ public class MoviePresenter implements MovieContract.Presenter {
     @Override
     public void loadMovies() {
         movieView.displayLoadingIndicator(true);
-        movieRepository.getMoreMovies(sortParameter, pageNumber, new MovieDataSource.LoadMoviesCallback() {
+        movieRepository.getMoreMovies(sortParameter, newSortSelected, new MovieDataSource.LoadMoviesCallback() {
             @Override
             public void onMoviesLoaded(@NonNull List<Movie> movies) {
                 movieView.displayLoadingIndicator(false);
@@ -74,23 +75,22 @@ public class MoviePresenter implements MovieContract.Presenter {
                 movieView.displayLoadingIndicator(false);
                 if (movieRepository.getCachedMoviesSize() == 0) {
                     movieView.displayNoMovies();
-                    pageNumber = 1;
                 }
                 movieView.displayLoadMoviesError();
             }
         });
-        pageNumber++;
     }
 
     @Override
     public void setSortParameter(@NonNull final SortParameters sortParameter) {
         if (!this.sortParameter.equals(sortParameter)) {
             this.sortParameter = sortParameter;
+            newSortSelected = true;
             if (!firstLoad) {
                 movieRepository.clearMovieCache();
                 movieView.displayClearMovies();
-                pageNumber = 1;
                 loadMovies();
+                newSortSelected = false;
             }
         }
     }

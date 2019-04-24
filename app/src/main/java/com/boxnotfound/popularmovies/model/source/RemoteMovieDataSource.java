@@ -29,7 +29,6 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
     private static final String API_KEY_PARAM = "api_key";
 
-    //TODO: IMPLEMENT PAGE NUMBER HANDLING TO GET FURTHER INTO THE LIST
     private static int PAGE_NUMBER = 1;
     private static final String PAGE_PARAM = "page";
 
@@ -56,12 +55,15 @@ public class RemoteMovieDataSource implements MovieDataSource {
     }
 
     @Override
-    public void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback) {
-        Request request = buildRequest(sortParameter, pageNumber);
+    public void getMoreMovies(@NonNull final SortParameters sortParameter, final boolean newSortSelected, @NonNull final LoadMoviesCallback callback) {
+        if (newSortSelected) {
+            PAGE_NUMBER = 1;
+        }
+        Request request = buildRequest(sortParameter);
         getJsonFromRequest(request, callback);
     }
 
-    private static @NonNull Request buildRequest(@NonNull final SortParameters sort, final int pageNumber) {
+    private static @NonNull Request buildRequest(@NonNull final SortParameters sort) {
 
         /*
             Before we execute this call, we need to ensure that the developer has set their API
@@ -81,7 +83,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
         HttpUrl.Builder builder = HttpUrl.parse(baseUrl).newBuilder()
                 .addQueryParameter(API_KEY_PARAM, apiKey)
-                .addQueryParameter(PAGE_PARAM, String.valueOf(pageNumber));
+                .addQueryParameter(PAGE_PARAM, String.valueOf(PAGE_NUMBER));
 
         String url = builder.build().toString();
 
@@ -101,11 +103,16 @@ public class RemoteMovieDataSource implements MovieDataSource {
             @Override
             public void onFailure(Call call, IOException e) {
                 Log.e(LOG_TAG, "getResponse onFailure: " + e.toString());
+                client.dispatcher().cancelAll();
+                Log.d(LOG_TAG, "current page number: " + PAGE_NUMBER);
                 callback.onMoviesNotAvailable();
             }
 
             @Override
             public void onResponse(Call call, Response response) throws IOException {
+                PAGE_NUMBER++;
+                Log.d(LOG_TAG, "onResponse success!");
+                Log.d(LOG_TAG, "current page number: " + PAGE_NUMBER);
                 Gson gson = new Gson();
                 MovieJSONResult result = gson.fromJson(response.body().charStream(), MovieJSONResult.class);
                 List<Movie> movies = result.getResults();

@@ -18,6 +18,6 @@ public interface MovieDataSource {
 
     void getCachedMovies(@NonNull final LoadMoviesCallback callback);
 
-    void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback);
+    void getMoreMovies(@NonNull final SortParameters sortParameter, final boolean newSortSelected, @NonNull final LoadMoviesCallback callback);
 
 }

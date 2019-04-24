@@ -54,8 +54,8 @@ public class MovieRepository implements MovieDataSource {
     }
 
     @Override
-    public void getMoreMovies(@NonNull final SortParameters sortParameter, final int pageNumber, @NonNull final LoadMoviesCallback callback) {
-        remoteMovieDataSource.getMoreMovies(sortParameter, pageNumber, new LoadMoviesCallback() {
+    public void getMoreMovies(@NonNull final SortParameters sortParameter, final boolean newSortSelected, @NonNull final LoadMoviesCallback callback) {
+        remoteMovieDataSource.getMoreMovies(sortParameter, newSortSelected, new LoadMoviesCallback() {
             @Override
             public void onMoviesLoaded(@NonNull List<Movie> movies) {
                 callback.onMoviesLoaded(movies);
