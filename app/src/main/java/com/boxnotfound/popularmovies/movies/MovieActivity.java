@@ -77,9 +77,6 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         recyclerView.setHasFixedSize(true);
         recyclerView.addOnScrollListener(new MovieScrollListener());
 
-        errorSnackbar = Snackbar.make(errorView, R.string.message_connection_error, Snackbar.LENGTH_INDEFINITE)
-                .setAction(R.string.retry, v -> moviePresenter.loadMovies());
-
         if (savedInstanceState != null) {
             selected = savedInstanceState.getInt(SORT_MENU_ITEM_SELECTED);
         }
@@ -170,7 +167,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayNewMovies(@NonNull List<Movie> movies) {
-        if (errorSnackbar.isShown()) {
+        if (errorSnackbar != null && errorSnackbar.isShown()) {
             errorSnackbar.dismiss();
         }
         adapter.addMovies(movies);
@@ -192,7 +189,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     @Override
     public void displayLoadMoviesError() {
-        errorSnackbar.show();
+        runOnUiThread(() -> {
+            if (errorSnackbar != null && errorSnackbar.isShown()) {
+                errorSnackbar.dismiss();
+            }
+            errorSnackbar = Snackbar.make(errorView, R.string.message_connection_error, Snackbar.LENGTH_INDEFINITE)
+                    .setAction(R.string.retry, v -> moviePresenter.loadMovies());
+            errorSnackbar.show();
+        });
         readyToLoad = true;
     }
 
