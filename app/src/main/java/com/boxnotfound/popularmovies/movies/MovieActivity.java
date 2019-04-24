@@ -176,6 +176,16 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     }
 
     @Override
+    public void displayCachedMovies(@NonNull List<Movie> movies) {
+        if (adapter.getItemCount() > 0) {
+            adapter.clearMovies();
+        }
+        adapter.addMovies(movies);
+        runOnUiThread(this::displayMovieView);
+        readyToLoad = true;
+    }
+
+    @Override
     public void displayNoMovies() {
         runOnUiThread(this::displayErrorView);
         readyToLoad = true;

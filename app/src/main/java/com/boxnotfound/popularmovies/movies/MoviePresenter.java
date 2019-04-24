@@ -50,7 +50,7 @@ public class MoviePresenter implements MovieContract.Presenter {
         movieRepository.getCachedMovies(new MovieDataSource.LoadMoviesCallback() {
             @Override
             public void onMoviesLoaded(@NonNull List<Movie> movies) {
-                movieView.displayNewMovies(movies);
+                movieView.displayCachedMovies(movies);
             }
 
             @Override

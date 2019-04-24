@@ -29,6 +29,8 @@ public interface MovieContract {
 
         void displayNewMovies(@NonNull List<Movie> movies);
 
+        void displayCachedMovies(@NonNull List<Movie> movies);
+
         void displayNoMovies();
 
         void displayClearMovies();
