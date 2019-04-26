@@ -8,7 +8,7 @@ public class MoviePosterUtils {
     // Constants to define the image size, which is appended to the Image Base URL
     private static final String IMAGE_SIZE_SMALL = "w185";
     private static final String IMAGE_SIZE_MEDIUM = "w342";
-    private static final String IMAGE_SIZE_LARGE = "w500";
+    private static final String IMAGE_SIZE_LARGE = "w780";
 
     private MoviePosterUtils() {
         // prevent instantiation to limit usage to static method calls
