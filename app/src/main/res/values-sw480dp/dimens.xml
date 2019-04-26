@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="size_image_connection_error">100dp</dimen>
+    <dimen name="size_image_poster_detail_width">128dp</dimen>
+    <dimen name="size_image_poster_detail_height">192dp</dimen>
+    <dimen name="size_progressbar">75dp</dimen>
+
+    <dimen name="padding_small">4dp</dimen>
+    <dimen name="padding_medium_small">8dp</dimen>
+    <dimen name="padding_medium">16dp</dimen>
+
+    <dimen name="margin_small">4dp</dimen>
+    <dimen name="margin_medium_small">8dp</dimen>
+    <dimen name="margin_medium">16dp</dimen>
+    <dimen name="margin_large">32dp</dimen>
+    <dimen name="margin_extra_large">64dp</dimen>
+
+    <dimen name="size_text_header">28sp</dimen>
+    <dimen name="size_text_label">20sp</dimen>
+    <dimen name="size_text_body">14sp</dimen>
+
+    <dimen name="size_backdrop_poster_height">192dp</dimen>
+</resources>
