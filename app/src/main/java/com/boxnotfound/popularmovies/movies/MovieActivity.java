@@ -2,6 +2,8 @@ package com.boxnotfound.popularmovies.movies;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -59,12 +61,16 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     @BindView(R.id.rv_movies) RecyclerView recyclerView;
     @BindView(R.id.display_error) RelativeLayout errorView;
     @BindView(R.id.pb_load_movies) ProgressBar progressBar;
+    @BindView(R.id.toolbar_movie) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_movie);
         ButterKnife.bind(this);
+
+        setSupportActionBar(toolbar);
+        getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         moviePresenter = new MoviePresenter(
                 MovieRepository.getInstance(RemoteMovieDataSource.getInstance()),
                 this);
