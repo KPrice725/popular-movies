@@ -2,8 +2,17 @@
     <string name="app_name">Popular Movies</string>
     <string name="content_description_connection_error">Connection Error</string>
     <string name="message_no_movies">Connection Error\nNo Movies To Display</string>
+    <string name="message_no_movie">Error\nMovie Information Not Found</string>
     <string name="message_connection_error">Connection Error: Unable to load movies</string>
     <string name="retry">RETRY</string>
     <string name="sort_most_popular">Most Popular</string>
     <string name="sort_highest_rated">Highest Rated</string>
+    <string name="content_description_backdrop_poster">Backdrop Poster</string>
+    <string name="content_description_movie_poster">Movie Poster</string>
+    <string name="content_description_release_date">Release Date</string>
+    <string name="content_description_user_rating">User Rating</string>
+
+    <string name="user_rating">%1$.1f/10</string>
+    <string name="content_description_genres">Genres</string>
+    <string name="overview_header">Overview</string>
 </resources>
