@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
 import android.util.Log;
@@ -76,7 +77,13 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 this);
         recyclerView = findViewById(R.id.rv_movies);
         int screenWidthInPx = Resources.getSystem().getDisplayMetrics().widthPixels;
-        layoutManager = new MovieGridLayoutManager(this, 4, screenWidthInPx);
+        int spanCount;
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+            spanCount = 2;
+        } else {
+            spanCount = 4;
+        }
+        layoutManager = new MovieGridLayoutManager(this, spanCount, screenWidthInPx);
         adapter = new MovieAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -333,13 +340,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         private int targetItemWidth;
         private int targetItemHeight;
         private int targetItemHorizontalPadding;
-        private int itemWidthTargetWindow = 360;
         private static final double ITEM_HEIGHT_TO_WIDTH_ASPECT_RATION = 1.5;
-        private int maxSpanCount;
 
-        public MovieGridLayoutManager(final Context context, final int maxSpanCount, final int screenWidthInPx) {
-            super(context, maxSpanCount); // spanCount must be set here, but will be adjusted shortly...
-            this.maxSpanCount = maxSpanCount;
+        public MovieGridLayoutManager(final Context context, final int spanCount, final int screenWidthInPx) {
+            super(context, spanCount); // spanCount must be set here, but will be adjusted shortly...
             setTargetItemWidth(screenWidthInPx);
             setTargetItemHeight();
             setTargetItemHorizontalPadding(screenWidthInPx);
@@ -352,9 +356,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         */
         private void setTargetItemWidth(final int screenWidthInPx) {
             int totalWidth = getHorizontalLayoutSpace(screenWidthInPx);
-            int newSpanCount = calculateAppropriateSpanCount(totalWidth);
-            setSpanCount(newSpanCount);
-            targetItemWidth = totalWidth / newSpanCount;
+            targetItemWidth = totalWidth / getSpanCount();
         }
 
         /*
@@ -372,31 +374,6 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             } else {
                 targetItemHorizontalPadding = 2 / (screenWidthInPx - (getTargetItemWidth() * getSpanCount()));
             }
-        }
-
-        /*
-            Determine the appropriate span size for the given screen width and a general
-            target width size.  If the calculated span exceeds the set max span size,
-            gradually scale the target width size.
-            TODO: This could likely be a little bit cleaner, look into improving this.
-        */
-        private int calculateAppropriateSpanCount(int totalWidth) {
-            if (totalWidth <= itemWidthTargetWindow) {
-                return 1;
-            }
-            int count = 0;
-            int widthHolder = totalWidth;
-            while (widthHolder - itemWidthTargetWindow >= 0) {
-                count++;
-                widthHolder -= itemWidthTargetWindow;
-                if (count > maxSpanCount) {
-                    count = 0;
-                    widthHolder = totalWidth;
-                    itemWidthTargetWindow = (int) (itemWidthTargetWindow * 1.25);
-                }
-
-            }
-            return count;
         }
 
         public int getTargetItemWidth() {
