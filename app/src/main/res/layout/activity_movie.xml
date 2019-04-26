@@ -4,33 +4,47 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
     tools:context=".movies.MovieActivity">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar_movie"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/colorPrimary"
+        android:fitsSystemWindows="true"
+        android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        android:elevation="5dp"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_movies"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"/>
+        android:layout_height="0dp"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_movie"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <RelativeLayout
         android:id="@+id/display_error"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/toolbar_movie"
         app:layout_constraintBottom_toBottomOf="parent"
         android:visibility="invisible">
 
         <ImageView
             android:id="@+id/iv_error"
             android:src="@drawable/ic_connection_error_black_24dp"
-            android:layout_width="100dp"
-            android:layout_height="100dp"
+            android:layout_width="@dimen/size_image_connection_error"
+            android:layout_height="@dimen/size_image_connection_error"
             android:contentDescription="@string/content_description_connection_error"
             android:layout_centerHorizontal="true"
             android:layout_alignParentTop="true"
             android:tint="@color/color_error"
-            android:layout_marginTop="64dp"/>
+            android:layout_marginTop="@dimen/margin_extra_large"/>
 
         <TextView
             android:id="@+id/tv_error"
@@ -41,15 +55,15 @@
             android:textColor="@color/color_error"
             android:layout_below="@id/iv_error"
             android:layout_centerHorizontal="true"
-            android:textSize="32sp"
-            android:layout_marginTop="32dp"/>
+            android:textSize="@dimen/size_text_header"
+            android:layout_marginTop="@dimen/margin_large"/>
 
     </RelativeLayout>
 
     <ProgressBar
         android:id="@+id/pb_load_movies"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="@dimen/size_progressbar"
+        android:layout_height="@dimen/size_progressbar"
         android:visibility="invisible"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
