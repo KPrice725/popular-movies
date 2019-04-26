@@ -67,6 +67,9 @@ public class DetailPresenter implements DetailContract.Presenter {
             String movieBackdropPosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getBackdropPosterPath());
             detailView.displayMovieBackdropPoster(movieBackdropPosterUrl);
 
+            String moviePosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
+            detailView.displayMoviePoster(moviePosterUrl);
+
             List<String> genresNames = new ArrayList<>();
             if (genreMap.size() > 0) {
                 List<Integer> genreIds = movie.getGenreIds();

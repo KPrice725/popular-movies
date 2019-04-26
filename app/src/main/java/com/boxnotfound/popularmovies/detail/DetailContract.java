@@ -36,6 +36,8 @@ public interface DetailContract {
 
         void displayMovieBackdropPoster(@NonNull final String backdropPosterPath);
 
+        void displayMoviePoster(@NonNull final String posterPath);
+
         void displayNoMovieDetails();
     }
 }
