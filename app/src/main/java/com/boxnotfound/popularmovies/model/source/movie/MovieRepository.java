@@ -1,5 +1,7 @@
 package com.boxnotfound.popularmovies.model.source.movie;
 
+import android.util.Log;
+
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;
 
@@ -65,6 +67,22 @@ public class MovieRepository implements MovieDataSource {
         });
     }
 
+    @Override
+    public void getMovieById(long movieId, @NonNull LoadMovieCallback callback) {
+        /*
+        First check the cache.  If the movie is not found in the cache, request
+        it from the remote data source.
+        */
+        cachedMovieMap.remove(movieId);
+        if (cachedMovieMap.containsKey(movieId)) {
+            Movie movie = cachedMovieMap.get(movieId);
+            assert movie != null;
+            callback.onMovieLoaded(movie);
+        } else {
+            remoteMovieDataSource.getMovieById(movieId, callback);
+        }
+    }
+
     private void cacheMovies(@NonNull List<Movie> movies) {
         if (cachedMovieMap == null) {
             cachedMovieMap = new LinkedHashMap<>();
@@ -79,14 +97,6 @@ public class MovieRepository implements MovieDataSource {
         }
 
         cachedMovieList.addAll(movies);
-    }
-
-    public Movie getMovieById(final long id) throws IllegalArgumentException {
-        if (cachedMovieMap.containsKey(id)) {
-            return cachedMovieMap.get(id);
-        } else {
-            throw new IllegalArgumentException("Invalid movie id: " + id);
-        }
     }
 
     public void clearMovieCache() {

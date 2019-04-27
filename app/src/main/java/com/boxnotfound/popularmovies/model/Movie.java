@@ -2,6 +2,7 @@ package com.boxnotfound.popularmovies.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.SparseArray;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -29,6 +30,7 @@ public class Movie implements Parcelable {
     @SerializedName("poster_path") private String posterPath;
     @SerializedName("backdrop_path") private String backdropPosterPath;
     @SerializedName("genre_ids") private List<Integer> genreIds;
+    @SerializedName("genres") private List<Genre> genreList;
 
     public String getTitle() {
         return title;
@@ -58,6 +60,8 @@ public class Movie implements Parcelable {
         return genreIds;
     }
 
+    public List<Genre> getGenreList() { return genreList; }
+
     public long getId() {
         return id;
     }
@@ -86,6 +90,7 @@ public class Movie implements Parcelable {
         dest.writeString(posterPath);
         dest.writeString(backdropPosterPath);
         dest.writeSerializable((Serializable) genreIds);
+        dest.writeSerializable((Serializable) genreList);
     }
 
     public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
@@ -109,5 +114,6 @@ public class Movie implements Parcelable {
         posterPath = in.readString();
         backdropPosterPath = in.readString();
         genreIds = (List<Integer>) in.readSerializable();
+        genreList = (List<Genre>) in.readSerializable();
     }
 }

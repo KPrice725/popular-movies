@@ -1,12 +1,12 @@
 package com.boxnotfound.popularmovies.detail;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.boxnotfound.popularmovies.model.Genre;
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.source.genre.GenreDataSource;
 import com.boxnotfound.popularmovies.model.source.genre.GenreRepository;
+import com.boxnotfound.popularmovies.model.source.movie.MovieDataSource;
 import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
 
@@ -64,11 +64,29 @@ public class DetailPresenter implements DetailContract.Presenter {
         the Parcelable Movie object passed to us is null, retrieve the movie from the Repository
         by passing it the movie ID.
         */
+        final boolean[] loading = {false};
         if (movie == null) {
-            movie = movieRepository.getMovieById(movieId);
+            loading[0] = true;
+            movieRepository.getMovieById(movieId, new MovieDataSource.LoadMovieCallback() {
+                @Override
+                public void onMovieLoaded(@NonNull Movie loadedMovie) {
+                    movie = loadedMovie;
+                    loading[0] = false;
+                }
+
+                @Override
+                public void onMovieNotAvailable() {
+                    loading[0] = false;
+                    throw new IllegalArgumentException("Error: Unknown movie requested");
+                }
+            });
         }
+        /*
+            In the event that the movieRepository calls on an asynchronous request to load the movie,
+            we want to wait until the movie is loaded before populating the UI.
+        */
+        while (loading[0]) ;
         if (movie != null) {
-            detailView.displayLoadingIndicator(false);
             detailView.displayMovieTitle(movie.getTitle());
             detailView.displayMovieOriginalTitle(movie.getOriginalTitle());
             detailView.displayMovieOverview(movie.getOverview());
@@ -81,16 +99,30 @@ public class DetailPresenter implements DetailContract.Presenter {
             String moviePosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
             detailView.displayMoviePoster(moviePosterUrl);
 
-            List<String> genresNames = new ArrayList<>();
+            /*
+                For populating the genreNames list, there are two potential options.  In the case of
+                a get movies request, the JSON result returns a list of genre int IDs.  In the case of a
+                get movie request, the JSON result returns a list of deserialized Genre objects.  Check
+                both of these to attempt to fill the genreNames List.
+            */
+            List<String> genreNames = new ArrayList<>();
             if (genreMap.size() > 0) {
                 List<Integer> genreIds = movie.getGenreIds();
-                for (int i = 0; i < genreIds.size(); i++) {
-                    int genreId = genreIds.get(i);
-                    Genre genre = genreMap.get(genreId);
-                    genresNames.add(genre.getName());
+                List<Genre> genreList = movie.getGenreList();
+                if (genreIds != null) {
+                    for (int i = 0; i < genreIds.size(); i++) {
+                        int genreId = genreIds.get(i);
+                        Genre genre = genreMap.get(genreId);
+                        genreNames.add(genre.getName());
+                    }
+                } else if (genreList != null) {
+                    for (Genre genre : genreList) {
+                        genreNames.add(genre.getName());
+                    }
                 }
             }
-            detailView.displayMovieGenres(genresNames);
+            detailView.displayMovieGenres(genreNames);
+            detailView.displayLoadingIndicator(false);
         } else {
             detailView.displayLoadingIndicator(false);
             detailView.displayNoMovieDetails();

@@ -16,8 +16,16 @@ public interface MovieDataSource {
         void onMoviesNotAvailable();
     }
 
+    interface LoadMovieCallback {
+
+        void onMovieLoaded(@NonNull Movie movie);
+
+        void onMovieNotAvailable();
+    }
+
     void getCachedMovies(@NonNull final LoadMoviesCallback callback);
 
     void getMoreMovies(@NonNull final SortParameters sortParameter, final boolean newSortSelected, @NonNull final LoadMoviesCallback callback);
 
+    void getMovieById(final long movieId, @NonNull final LoadMovieCallback callback);
 }
