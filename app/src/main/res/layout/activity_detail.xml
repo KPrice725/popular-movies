@@ -86,18 +86,17 @@
                     android:layout_marginTop="@dimen/margin_medium"
                     android:paddingTop="@dimen/padding_medium"
                     android:paddingBottom="@dimen/padding_medium"
-                    android:textSize="@dimen/size_text_label"
+                    android:textSize="@dimen/size_text_header"
                     android:textAlignment="viewStart"
                     android:gravity="center_vertical|start"
                     app:layout_constraintLeft_toRightOf="@id/iv_detail_poster"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintRight_toRightOf="parent"
-                    tools:text="The best movie ever" />
+                    app:layout_constraintRight_toRightOf="parent" />
 
                 <ImageView
                     android:id="@+id/iv_release_date"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/size_icon_detail"
+                    android:layout_height="@dimen/size_icon_detail"
                     android:contentDescription="@string/content_description_release_date"
                     android:src="@drawable/ic_release_date_black_24dp"
                     android:tint="#ffb1120e"
@@ -109,6 +108,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
+                    android:textSize="@dimen/size_text_label"
                     app:layout_constraintBottom_toBottomOf="@id/iv_release_date"
                     app:layout_constraintLeft_toRightOf="@id/iv_release_date"
                     app:layout_constraintTop_toTopOf="@id/iv_release_date"
@@ -116,8 +116,8 @@
 
                 <ImageView
                     android:id="@+id/iv_user_rating"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/size_icon_detail"
+                    android:layout_height="@dimen/size_icon_detail"
                     android:contentDescription="@string/content_description_user_rating"
                     android:src="@drawable/ic_user_rating_black_24dp"
                     android:tint="#ffffd700"
@@ -129,6 +129,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
+                    android:textSize="@dimen/size_text_label"
                     app:layout_constraintBottom_toBottomOf="@id/iv_user_rating"
                     app:layout_constraintLeft_toRightOf="@id/iv_user_rating"
                     app:layout_constraintTop_toTopOf="@id/iv_user_rating"
@@ -136,8 +137,8 @@
 
                 <ImageView
                     android:id="@+id/iv_genres"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="@dimen/size_icon_detail"
+                    android:layout_height="@dimen/size_icon_detail"
                     android:contentDescription="@string/content_description_genres"
                     android:src="@drawable/ic_genre_black_24dp"
                     android:tint="#ff007700"
@@ -149,6 +150,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="@dimen/margin_small"
+                    android:textSize="@dimen/size_text_label"
                     app:layout_constraintLeft_toRightOf="@id/iv_genres"
                     app:layout_constraintTop_toTopOf="@id/iv_genres"
                     tools:text="Action\nDrama\n"/>
@@ -178,7 +180,7 @@
                     android:id="@+id/overview_header"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:textSize="@dimen/size_text_label"
+                    android:textSize="@dimen/size_text_header"
                     android:layout_marginTop="@dimen/margin_medium"
                     android:paddingStart="@dimen/padding_medium"
                     android:paddingEnd="@dimen/padding_medium"
@@ -193,6 +195,7 @@
                     android:paddingStart="@dimen/padding_medium"
                     android:paddingEnd="@dimen/padding_medium"
                     android:layout_marginTop="@dimen/margin_medium_small"
+                    android:textSize="@dimen/size_text_body"
                     app:layout_constraintLeft_toLeftOf="@id/overview_header"
                     app:layout_constraintTop_toBottomOf="@id/overview_header"
                     tools:text="A really great description!" />

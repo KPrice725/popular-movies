@@ -17,7 +17,9 @@
 
     <dimen name="size_text_header">24sp</dimen>
     <dimen name="size_text_label">18sp</dimen>
-    <dimen name="size_text_body">12sp</dimen>
+    <dimen name="size_text_body">16sp</dimen>
+
+    <dimen name="size_icon_detail">28dp</dimen>
 
     <dimen name="size_backdrop_poster_height">128dp</dimen>
 </resources>

@@ -15,9 +15,11 @@
     <dimen name="margin_large">32dp</dimen>
     <dimen name="margin_extra_large">64dp</dimen>
 
-    <dimen name="size_text_header">32sp</dimen>
-    <dimen name="size_text_label">24sp</dimen>
-    <dimen name="size_text_body">16sp</dimen>
+    <dimen name="size_text_header">40sp</dimen>
+    <dimen name="size_text_label">30sp</dimen>
+    <dimen name="size_text_body">24sp</dimen>
+
+    <dimen name="size_icon_detail">54dp</dimen>
 
     <dimen name="size_backdrop_poster_height">256dp</dimen>
 </resources>
