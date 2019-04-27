@@ -37,6 +37,6 @@ public interface MovieContract {
 
         void displayLoadMoviesError();
 
-        void displayMovieDetailActivity(final long movieId);
+        void displayMovieDetailActivity(@NonNull final Movie requestedMovie);
     }
 }

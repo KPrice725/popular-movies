@@ -1,10 +1,18 @@
 package com.boxnotfound.popularmovies.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.SerializedName;
 
+import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.List;
 
-public class Movie {
+/*
+The Movie Entity is Parcelable to allow ease of transfer between the MovieActivity and DetailActivity
+*/
+public class Movie implements Parcelable {
 
     /*
         The RemoteMovieDataSource calls to retrieve popular movie data will be initially deserialized
@@ -62,4 +70,44 @@ public class Movie {
         return backdropPosterPath;
     }
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeLong(id);
+        dest.writeString(title);
+        dest.writeString(originalTitle);
+        dest.writeString(overview);
+        dest.writeString(releaseDate);
+        dest.writeDouble(userRating);
+        dest.writeString(posterPath);
+        dest.writeString(backdropPosterPath);
+        dest.writeSerializable((Serializable) genreIds);
+    }
+
+    public static final Parcelable.Creator<Movie> CREATOR = new Parcelable.Creator<Movie>() {
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
+
+    private Movie(Parcel in) {
+        id = in.readLong();
+        title = in.readString();
+        originalTitle = in.readString();
+        overview = in.readString();
+        releaseDate = in.readString();
+        userRating = in.readDouble();
+        posterPath = in.readString();
+        backdropPosterPath = in.readString();
+        genreIds = (List<Integer>) in.readSerializable();
+    }
 }

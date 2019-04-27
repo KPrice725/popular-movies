@@ -1,5 +1,6 @@
 package com.boxnotfound.popularmovies.detail;
 
+import android.util.Log;
 import android.util.SparseArray;
 
 import com.boxnotfound.popularmovies.model.Genre;
@@ -24,13 +25,16 @@ public class DetailPresenter implements DetailContract.Presenter {
 
     private final long movieId;
 
+    private Movie movie;
+
     public DetailPresenter(@NonNull final MovieRepository movieRepository,
                            @NonNull final GenreRepository genreRepository,
                            @NonNull final DetailContract.View detailView,
-                           final long movieId) {
+                           final Movie movie, final long movieId) {
         this.movieRepository = movieRepository;
         this.genreRepository = genreRepository;
         this.detailView = detailView;
+        this.movie = movie;
         this.movieId = movieId;
 
         detailView.setPresenter(this);
@@ -43,19 +47,26 @@ public class DetailPresenter implements DetailContract.Presenter {
         genreRepository.loadGenres(new GenreDataSource.LoadGenresCallback() {
             @Override
             public void onGenresLoaded(@NonNull SparseArray<Genre> genreMap) {
-                loadMovie(movieId, genreMap);
+                loadMovie(genreMap);
             }
 
             @Override
             public void onGenresNotAvailable() {
-                loadMovie(movieId, new SparseArray<>());
+                loadMovie(new SparseArray<>());
             }
         });
     }
 
     @Override
-    public void loadMovie(long movieId, @NonNull SparseArray<Genre> genreMap) {
-        Movie movie = movieRepository.getMovieById(movieId);
+    public void loadMovie(@NonNull SparseArray<Genre> genreMap) {
+        /*
+        We receive both the movie and the movie ID from the intent Bundle.  If for some reason
+        the Parcelable Movie object passed to us is null, retrieve the movie from the Repository
+        by passing it the movie ID.
+        */
+        if (movie == null) {
+            movie = movieRepository.getMovieById(movieId);
+        }
         if (movie != null) {
             detailView.displayLoadingIndicator(false);
             detailView.displayMovieTitle(movie.getTitle());

@@ -97,7 +97,7 @@ public class MoviePresenter implements MovieContract.Presenter {
 
     @Override
     public void openMovieDetails(@NonNull final Movie requestedMovie) {
-        final long id = requestedMovie.getId();
-        movieView.displayMovieDetailActivity(id);
+//        final long id = requestedMovie.getId();
+        movieView.displayMovieDetailActivity(requestedMovie);
     }
 }

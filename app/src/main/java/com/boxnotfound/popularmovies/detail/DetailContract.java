@@ -14,7 +14,7 @@ public interface DetailContract {
 
     interface Presenter extends BasePresenter {
 
-        void loadMovie(final long movieId, @NonNull final SparseArray<Genre> genreMap);
+        void loadMovie(@NonNull final SparseArray<Genre> genreMap);
 
     }
 

@@ -7,9 +7,11 @@ import androidx.core.widget.NestedScrollView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
+import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -18,6 +20,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.boxnotfound.popularmovies.R;
+import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.source.genre.GenreRepository;
 import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.genre.RemoteGenreDataSource;
@@ -35,8 +38,6 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     private DetailContract.Presenter detailPresenter;
-
-    private long movieId;
 
     private static int moviePosterWidth;
     private static int moviePosterHeight;
@@ -70,9 +71,12 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
-        Bundle bundle = getIntent().getExtras();
-        if (bundle != null) {
-            movieId = bundle.getLong(MovieActivity.EXTRA_MOVIE_ID);
+        Movie movie = null;
+        long movieId = 0;
+        Intent intent = getIntent();
+        if (intent != null) {
+            movie = intent.getParcelableExtra(MovieActivity.EXTRA_MOVIE);
+            movieId = intent.getLongExtra(MovieActivity.EXTRA_MOVIE_ID, 0);
         }
 
         /*
@@ -90,7 +94,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         setBackdropImageSize();
 
         detailPresenter = new DetailPresenter(MovieRepository.getInstance(RemoteMovieDataSource.getInstance()),
-                GenreRepository.getInstance(RemoteGenreDataSource.getInstance()), this, movieId);
+                GenreRepository.getInstance(RemoteGenreDataSource.getInstance()), this, movie, movieId);
 
     }
 

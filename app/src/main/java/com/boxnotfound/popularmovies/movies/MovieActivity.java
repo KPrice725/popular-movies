@@ -34,6 +34,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private static final String SORT_MENU_ITEM_SELECTED = "sort_menu_item_selected";
 
+    public static final String EXTRA_MOVIE = "extra_movie";
     public static final String EXTRA_MOVIE_ID = "extra_movie_id";
 
     private int selected = -1;
@@ -207,9 +208,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     }
 
     @Override
-    public void displayMovieDetailActivity(final long movieId) {
+    public void displayMovieDetailActivity(@NonNull final Movie requestedMovie) {
         Intent intent = new Intent(MovieActivity.this, DetailActivity.class);
-        intent.putExtra(EXTRA_MOVIE_ID, movieId);
+        intent.putExtra(EXTRA_MOVIE, requestedMovie);
+        intent.putExtra(EXTRA_MOVIE_ID, requestedMovie.getId());
         startActivity(intent);
     }
 
