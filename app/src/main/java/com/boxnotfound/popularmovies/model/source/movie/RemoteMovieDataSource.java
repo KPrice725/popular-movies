@@ -18,6 +18,11 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.boxnotfound.popularmovies.model.utilities.ModelConstants.API_KEY_PARAM;
+import static com.boxnotfound.popularmovies.model.utilities.ModelConstants.PAGE_PARAM;
+import static com.boxnotfound.popularmovies.model.utilities.ModelConstants.TMDB_API_MOST_POPULAR_URL;
+import static com.boxnotfound.popularmovies.model.utilities.ModelConstants.TMDB_API_TOP_RATED_URL;
+
 public class RemoteMovieDataSource implements MovieDataSource {
 
     private static final String LOG_TAG = RemoteMovieDataSource.class.getSimpleName();
@@ -26,15 +31,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
     private static OkHttpClient client;
 
-    private static final String API_KEY_PARAM = "api_key";
-
     private static int PAGE_NUMBER = 1;
-    private static final String PAGE_PARAM = "page";
-
-    // Provides the base URL for the movie list query to populate the MovieList
-    private static final String TMDB_API_BASE_URL = "https://api.themoviedb.org/3/";
-    private static final String TMDB_API_MOST_POPULAR_URL = TMDB_API_BASE_URL + "movie/popular";
-    private static final String TMDB_API_TOP_RATED_URL = TMDB_API_BASE_URL + "movie/top_rated";
 
     private RemoteMovieDataSource() {
         // prevent instantiation to limit usage to require getInstance()

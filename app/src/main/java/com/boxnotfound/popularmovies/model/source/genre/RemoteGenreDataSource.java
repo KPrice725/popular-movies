@@ -19,6 +19,9 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static com.boxnotfound.popularmovies.model.utilities.ModelConstants.API_KEY_PARAM;
+import static com.boxnotfound.popularmovies.model.utilities.ModelConstants.TMDB_API_GENRE_URL;
+
 
 /*
 The TMDB API has a separate table that stores key/value pairs of genres.  When retrieving
@@ -33,12 +36,6 @@ public class RemoteGenreDataSource implements GenreDataSource {
     private static RemoteGenreDataSource INSTANCE = null;
 
     private static OkHttpClient client;
-
-    private static final String API_KEY_PARAM = "api_key";
-
-    // Provides the base URL for the genre list query to populate the GenreMap
-    private static final String TMDB_API_BASE_URL = "https://api.themoviedb.org/3/";
-    private static final String TMDB_API_GENRE_URL = TMDB_API_BASE_URL + "genre/movie/list";
 
     private RemoteGenreDataSource() {
         // prevent instantiation to limit usage to require getInstance()
