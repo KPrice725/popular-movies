@@ -11,7 +11,7 @@ public class GenreRepository implements GenreDataSource {
     private static final String LOG_TAG = GenreRepository.class.getSimpleName();
     private static GenreRepository INSTANCE = null;
 
-    private GenreDataSource remoteGenreDataSource;
+    private final GenreDataSource remoteGenreDataSource;
 
     private SparseArray<Genre> cachedGenreMap;
 

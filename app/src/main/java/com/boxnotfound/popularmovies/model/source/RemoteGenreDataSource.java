@@ -9,6 +9,7 @@ import com.google.gson.Gson;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Objects;
 
 import androidx.annotation.NonNull;
 import okhttp3.Call;
@@ -58,9 +59,9 @@ public class RemoteGenreDataSource implements GenreDataSource {
         String apiKey = MovieApiKeyInjector.inject();
         if (apiKey.equals("")) {
             Log.e(LOG_TAG, "Error: No API Key Set. Developer needs to set TMDB API Key.");
-            return null;
+            throw new IllegalArgumentException("Error: No API Key Set. Developer needs to set TMDB API Key.");
         }
-        HttpUrl.Builder builder = HttpUrl.parse(TMDB_API_GENRE_URL).newBuilder()
+        HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(TMDB_API_GENRE_URL)).newBuilder()
                 .addQueryParameter(API_KEY_PARAM, apiKey);
 
         String url = builder.build().toString();
@@ -76,12 +77,7 @@ public class RemoteGenreDataSource implements GenreDataSource {
         client = new OkHttpClient();
         Log.d(LOG_TAG, "default client maxRequests: " + client.dispatcher().getMaxRequests());
         client.dispatcher().setMaxRequests(1);
-        client.dispatcher().setIdleCallback(new Runnable() {
-            @Override
-            public void run() {
-                client = null;
-            }
-        });
+        client.dispatcher().setIdleCallback(() -> client = null);
     }
 
     private static void getJsonFromRequest(@NonNull final Request request, @NonNull final LoadGenresCallback callback) {
@@ -97,8 +93,9 @@ public class RemoteGenreDataSource implements GenreDataSource {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 Gson gson = new Gson();
+                assert response.body() != null;
                 GenreJSONResult result = gson.fromJson(response.body().charStream(), GenreJSONResult.class);
                 List<Genre> genres = result.getGenreList();
                 SparseArray<Genre> genreSparseArray = getGenreSparseArrayFromList(genres);

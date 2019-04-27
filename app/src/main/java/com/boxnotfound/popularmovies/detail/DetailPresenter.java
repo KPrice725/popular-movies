@@ -16,13 +16,13 @@ import androidx.annotation.NonNull;
 
 public class DetailPresenter implements DetailContract.Presenter {
 
-    private MovieRepository movieRepository;
+    private final MovieRepository movieRepository;
 
-    private GenreRepository genreRepository;
+    private final GenreRepository genreRepository;
 
-    private DetailContract.View detailView;
+    private final DetailContract.View detailView;
 
-    private long movieId;
+    private final long movieId;
 
     public DetailPresenter(@NonNull final MovieRepository movieRepository,
                            @NonNull final GenreRepository genreRepository,

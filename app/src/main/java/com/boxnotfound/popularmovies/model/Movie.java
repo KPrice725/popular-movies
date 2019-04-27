@@ -22,72 +22,32 @@ public class Movie {
     @SerializedName("backdrop_path") private String backdropPosterPath;
     @SerializedName("genre_ids") private List<Integer> genreIds;
 
-    public Movie(long id, String title, String originalTitle, String overview, String releaseDate, double userRating, String posterPath, String backdropPosterPath, List<Integer> genreIds) {
-        this.id = id;
-        this.title = title;
-        this.originalTitle = originalTitle;
-        this.overview = overview;
-        this.releaseDate = releaseDate;
-        this.userRating = userRating;
-        this.posterPath = posterPath;
-        this.backdropPosterPath = backdropPosterPath;
-        this.genreIds = genreIds;
-    }
-
     public String getTitle() {
         return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
     }
 
     public String getOriginalTitle() {
         return originalTitle;
     }
 
-    public void setOriginalTitle(String originalTitle) {
-        this.originalTitle = originalTitle;
-    }
-
     public String getOverview() {
         return overview;
-    }
-
-    public void setOverview(String overview) {
-        this.overview = overview;
     }
 
     public String getReleaseDate() {
         return releaseDate;
     }
 
-    public void setReleaseDate(String releaseDate) {
-        this.releaseDate = releaseDate;
-    }
-
     public double getUserRating() {
         return userRating;
-    }
-
-    public void setUserRating(double userRating) {
-        this.userRating = userRating;
     }
 
     public String getPosterPath() {
         return posterPath;
     }
 
-    public void setPosterPath(String posterPath) {
-        this.posterPath = posterPath;
-    }
-
     public List<Integer> getGenreIds() {
         return genreIds;
-    }
-
-    public void setGenreIds(List<Integer> genreIds) {
-        this.genreIds = genreIds;
     }
 
     public long getId() {
@@ -102,7 +62,4 @@ public class Movie {
         return backdropPosterPath;
     }
 
-    public void setBackdropPosterPath(String backdropPosterPath) {
-        this.backdropPosterPath = backdropPosterPath;
-    }
 }

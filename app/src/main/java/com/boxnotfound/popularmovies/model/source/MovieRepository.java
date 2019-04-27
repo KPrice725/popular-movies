@@ -17,7 +17,7 @@ public class MovieRepository implements MovieDataSource {
     private static final String LOG_TAG = MovieRepository.class.getSimpleName();
     private static MovieRepository INSTANCE = null;
 
-    private MovieDataSource remoteMovieDataSource;
+    private final MovieDataSource remoteMovieDataSource;
 
     private Map<Long, Movie> cachedMovieMap;
 

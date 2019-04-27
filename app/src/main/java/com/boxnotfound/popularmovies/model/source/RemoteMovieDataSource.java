@@ -109,7 +109,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
             }
 
             @Override
-            public void onResponse(Call call, Response response) throws IOException {
+            public void onResponse(Call call, Response response) {
                 PAGE_NUMBER++;
                 Log.d(LOG_TAG, "onResponse success!");
                 Log.d(LOG_TAG, "current page number: " + PAGE_NUMBER);
@@ -125,12 +125,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
         client = new OkHttpClient();
         Log.d(LOG_TAG, "default client maxRequests: " + client.dispatcher().getMaxRequests());
         client.dispatcher().setMaxRequests(1);
-        client.dispatcher().setIdleCallback(new Runnable() {
-            @Override
-            public void run() {
-                client = null;
-            }
-        });
+        client.dispatcher().setIdleCallback(() -> client = null);
     }
 
     private static @NonNull String getBaseUrlFromSortParameter(@NonNull final SortParameters sort) throws IllegalArgumentException {

@@ -8,7 +8,7 @@ import androidx.annotation.NonNull;
 
 public class GenreJSONResult {
 
-    @SerializedName("genres") private List<Genre> genreList;
+    @SerializedName("genres") private final List<Genre> genreList;
 
     public GenreJSONResult(@NonNull final List<Genre> genreList) {
         this.genreList = genreList;
