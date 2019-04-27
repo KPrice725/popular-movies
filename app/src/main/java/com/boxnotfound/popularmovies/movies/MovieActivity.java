@@ -78,7 +78,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         recyclerView = findViewById(R.id.rv_movies);
         int screenWidthInPx = Resources.getSystem().getDisplayMetrics().widthPixels;
         layoutManager = new MovieGridLayoutManager(this, screenWidthInPx);
-        adapter = new MovieAdapter(this);
+        adapter = new MovieAdapter(moviePresenter, layoutManager);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
         recyclerView.setHasFixedSize(true);
@@ -176,9 +176,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         if (errorSnackbar != null && errorSnackbar.isShown()) {
             errorSnackbar.dismiss();
         }
-        adapter.addMovies(movies);
-        runOnUiThread(this::displayMovieView);
-        readyToLoad = true;
+        runOnUiThread(() -> {
+            adapter.addMovies(movies);
+            displayMovieView();
+        });
     }
 
     @Override
@@ -231,84 +232,6 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
     private void displayErrorView() {
         recyclerView.setVisibility(View.INVISIBLE);
         errorView.setVisibility(View.VISIBLE);
-    }
-
-    private class MovieAdapter extends RecyclerView.Adapter<MovieAdapter.ViewHolder> {
-
-        private Context context;
-        private ArrayList<Movie> movieList;
-
-        public MovieAdapter(@NonNull final Context context) {
-            this.context = context;
-            movieList = new ArrayList<>();
-        }
-
-        @NonNull
-        @Override
-        public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            Context parentContext = parent.getContext();
-            LayoutInflater inflater = LayoutInflater.from(parentContext);
-
-            View movieView = inflater.inflate(R.layout.movie_rv_item, parent, false);
-
-            ViewHolder viewHolder = new ViewHolder(movieView);
-            return viewHolder;
-
-        }
-
-        @Override
-        public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-            final Movie movie = movieList.get(position);
-            String posterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
-            Picasso.get().load(posterUrl)
-                    .resize(layoutManager.getTargetItemWidth(), layoutManager.getTargetItemHeight())
-                    .centerCrop()
-                    .into(viewHolder.posterImage);
-        }
-
-        @Override
-        public int getItemCount() {
-            if (movieList != null) {
-                return movieList.size();
-            } else {
-                return 0;
-            }
-        }
-
-        public void addMovies(@NonNull final List<Movie> movies) {
-            int currentIndex = getItemCount();
-            movieList.addAll(movies);
-            runOnUiThread(() -> notifyItemRangeInserted(currentIndex, movies.size()));
-        }
-
-        public void clearMovies() {
-            if (movieList != null) {
-                movieList.clear();
-                notifyDataSetChanged();
-            }
-        }
-
-        private class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-
-            private ImageView posterImage;
-
-            public ViewHolder(@NonNull View itemView) {
-                super(itemView);
-                posterImage = itemView.findViewById(R.id.iv_movie_poster);
-                posterImage.getLayoutParams().height = layoutManager.getTargetItemHeight();
-                posterImage.getLayoutParams().width = layoutManager.getTargetItemWidth();
-                posterImage.setPadding(layoutManager.getTargetItemHorizontalPadding(),
-                        0, layoutManager.getTargetItemHorizontalPadding(), 0);
-
-                itemView.setOnClickListener(this);
-            }
-
-            @Override
-            public void onClick(View v) {
-                int index = getAdapterPosition();
-                moviePresenter.openMovieDetails(movieList.get(index));
-            }
-        }
     }
 
     /*
