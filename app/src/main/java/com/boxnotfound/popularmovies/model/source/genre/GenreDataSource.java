@@ -1,4 +1,4 @@
-package com.boxnotfound.popularmovies.model.source;
+package com.boxnotfound.popularmovies.model.source.genre;
 
 import android.util.SparseArray;
 

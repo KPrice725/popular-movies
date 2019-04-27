@@ -4,9 +4,9 @@ import android.util.SparseArray;
 
 import com.boxnotfound.popularmovies.model.Genre;
 import com.boxnotfound.popularmovies.model.Movie;
-import com.boxnotfound.popularmovies.model.source.GenreDataSource;
-import com.boxnotfound.popularmovies.model.source.GenreRepository;
-import com.boxnotfound.popularmovies.model.source.MovieRepository;
+import com.boxnotfound.popularmovies.model.source.genre.GenreDataSource;
+import com.boxnotfound.popularmovies.model.source.genre.GenreRepository;
+import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
 
 import java.util.ArrayList;

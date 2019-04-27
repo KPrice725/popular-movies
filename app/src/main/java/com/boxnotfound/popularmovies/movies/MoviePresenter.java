@@ -2,8 +2,8 @@ package com.boxnotfound.popularmovies.movies;
 
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;
-import com.boxnotfound.popularmovies.model.source.MovieDataSource;
-import com.boxnotfound.popularmovies.model.source.MovieRepository;
+import com.boxnotfound.popularmovies.model.source.movie.MovieDataSource;
+import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 
 import java.util.List;
 

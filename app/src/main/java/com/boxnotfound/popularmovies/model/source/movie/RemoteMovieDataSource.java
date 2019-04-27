@@ -1,11 +1,10 @@
-package com.boxnotfound.popularmovies.model.source;
+package com.boxnotfound.popularmovies.model.source.movie;
 
-
-import android.util.Log;
 
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.MovieJSONResult;
 import com.boxnotfound.popularmovies.model.SortParameters;
+import com.boxnotfound.popularmovies.model.source.MovieApiKeyInjector;
 import com.google.gson.Gson;
 
 import java.io.IOException;

@@ -1,6 +1,4 @@
-package com.boxnotfound.popularmovies.model.source;
-
-import android.util.Log;
+package com.boxnotfound.popularmovies.model.source.movie;
 
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;

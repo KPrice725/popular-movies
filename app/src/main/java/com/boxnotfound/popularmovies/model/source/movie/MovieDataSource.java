@@ -1,4 +1,4 @@
-package com.boxnotfound.popularmovies.model.source;
+package com.boxnotfound.popularmovies.model.source.movie;
 
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;

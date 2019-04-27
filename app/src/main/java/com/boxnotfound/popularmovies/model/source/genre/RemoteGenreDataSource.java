@@ -1,10 +1,10 @@
-package com.boxnotfound.popularmovies.model.source;
+package com.boxnotfound.popularmovies.model.source.genre;
 
-import android.util.Log;
 import android.util.SparseArray;
 
 import com.boxnotfound.popularmovies.model.Genre;
 import com.boxnotfound.popularmovies.model.GenreJSONResult;
+import com.boxnotfound.popularmovies.model.source.MovieApiKeyInjector;
 import com.google.gson.Gson;
 
 import java.io.IOException;
@@ -19,6 +19,13 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+
+/*
+The TMDB API has a separate table that stores key/value pairs of genres.  When retrieving
+movie JSON data, these genres stored and returned as their respective integer keys.  To
+decode these keys into their respective string values, we need to retrieve and cache the table
+of genre key/value mappings from the TMDB API.
+*/
 public class RemoteGenreDataSource implements GenreDataSource {
 
     private static final String LOG_TAG = RemoteGenreDataSource.class.getSimpleName();

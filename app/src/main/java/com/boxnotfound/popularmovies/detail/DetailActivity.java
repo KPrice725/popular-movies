@@ -18,14 +18,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.boxnotfound.popularmovies.R;
-import com.boxnotfound.popularmovies.model.source.GenreRepository;
-import com.boxnotfound.popularmovies.model.source.MovieRepository;
-import com.boxnotfound.popularmovies.model.source.RemoteGenreDataSource;
-import com.boxnotfound.popularmovies.model.source.RemoteMovieDataSource;
+import com.boxnotfound.popularmovies.model.source.genre.GenreRepository;
+import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
+import com.boxnotfound.popularmovies.model.source.genre.RemoteGenreDataSource;
+import com.boxnotfound.popularmovies.model.source.movie.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.movies.MovieActivity;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
