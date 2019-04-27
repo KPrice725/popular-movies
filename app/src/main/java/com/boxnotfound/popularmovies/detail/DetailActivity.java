@@ -176,26 +176,21 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
 
     @Override
     public void displayMovieBackdropPoster(@NonNull String backdropPosterPath) {
-        runOnUiThread(() -> {
-
-            Picasso.get().load(backdropPosterPath)
-                    .error(R.drawable.ic_connection_error_black_24dp)
-                    .resize(movieBackdropWidth, movieBackdropHeight)
-                    .centerCrop()
-                    .into(movieBackdropIv);
-        });
+        loadImage(movieBackdropIv, backdropPosterPath, movieBackdropWidth, movieBackdropHeight);
     }
 
     @Override
     public void displayMoviePoster(@NonNull String posterPath) {
-        runOnUiThread(() -> {
+        loadImage(moviePosterIv, posterPath, moviePosterWidth, moviePosterHeight);
+    }
 
-            Picasso.get().load(posterPath)
-                    .error(R.drawable.ic_connection_error_black_24dp)
-                    .resize(moviePosterWidth, moviePosterHeight)
-                    .centerCrop()
-                    .into(moviePosterIv);
-        });
+    private void loadImage(@NonNull final ImageView imageView, @NonNull final String imagePath,
+                           final int width, final int height) {
+        runOnUiThread(() -> Picasso.get().load(imagePath)
+                .error(R.drawable.ic_connection_error_black_24dp)
+                .resize(width, height)
+                .centerCrop()
+                .into(imageView));
     }
 
     private void setPosterImageSize() {
