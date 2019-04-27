@@ -77,13 +77,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 this);
         recyclerView = findViewById(R.id.rv_movies);
         int screenWidthInPx = Resources.getSystem().getDisplayMetrics().widthPixels;
-        int spanCount;
-        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
-            spanCount = 2;
-        } else {
-            spanCount = 4;
-        }
-        layoutManager = new MovieGridLayoutManager(this, spanCount, screenWidthInPx);
+        layoutManager = new MovieGridLayoutManager(this, screenWidthInPx);
         adapter = new MovieAdapter(this);
         recyclerView.setAdapter(adapter);
         recyclerView.setLayoutManager(layoutManager);
@@ -341,9 +335,12 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         private int targetItemHeight;
         private int targetItemHorizontalPadding;
         private static final double ITEM_HEIGHT_TO_WIDTH_ASPECT_RATION = 1.5;
+        private static final int SPAN_COUNT_PORTRAIT = 2;
+        private static final int SPAN_COUNT_LANDSCAPE = 4;
 
-        public MovieGridLayoutManager(final Context context, final int spanCount, final int screenWidthInPx) {
-            super(context, spanCount); // spanCount must be set here, but will be adjusted shortly...
+        public MovieGridLayoutManager(final Context context, final int screenWidthInPx) {
+            super(context, 2); // spanCount must be set here, but will be adjusted shortly...
+            setTargetSpanCount();
             setTargetItemWidth(screenWidthInPx);
             setTargetItemHeight();
             setTargetItemHorizontalPadding(screenWidthInPx);
@@ -373,6 +370,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 targetItemHorizontalPadding = 0;
             } else {
                 targetItemHorizontalPadding = 2 / (screenWidthInPx - (getTargetItemWidth() * getSpanCount()));
+            }
+        }
+
+        private void setTargetSpanCount() {
+            if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_PORTRAIT) {
+                setSpanCount(SPAN_COUNT_PORTRAIT);
+            } else {
+                setSpanCount(SPAN_COUNT_LANDSCAPE);
             }
         }
 
