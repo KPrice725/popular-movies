@@ -13,6 +13,10 @@ for that particular item, displaying additional information such as
 the title, plot synopsis, user rating, release date, etc.
 
 ## Tools That I Used
+
+### themoviedb.org (TMDB) API
+- When the application is launched the Model fetches a list of movies from the TMDB API, depending on the sort preference selected by the user.  As the user scrolls down, additional movies are fetched from this source to achieve continous scrolling.  The API Key is left blank for security reasons, but the end user should sign up for their own API Key and populate the String variable in the MovieApiKeyInjector.java class for this to function properly.
+
 ### Model View Presenter Architecture
 ![MVP Diagram](/readme-resources/Popular_Movies_MVP_Diagram.jpg)
 
