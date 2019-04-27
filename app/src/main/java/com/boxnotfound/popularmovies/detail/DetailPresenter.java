@@ -77,7 +77,6 @@ public class DetailPresenter implements DetailContract.Presenter {
                 @Override
                 public void onMovieNotAvailable() {
                     loading[0] = false;
-                    throw new IllegalArgumentException("Error: Unknown movie requested");
                 }
             });
         }
