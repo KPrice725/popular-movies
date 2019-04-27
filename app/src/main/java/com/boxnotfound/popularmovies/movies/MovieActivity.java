@@ -6,16 +6,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 
@@ -25,11 +21,8 @@ import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;
 import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.movie.RemoteMovieDataSource;
-import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Picasso;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
@@ -55,14 +48,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private Snackbar errorSnackbar;
 
-    @BindView(R.id.rv_movies)
-    RecyclerView recyclerView;
-    @BindView(R.id.display_error)
-    RelativeLayout errorView;
-    @BindView(R.id.pb_load_movies)
-    ProgressBar progressBar;
-    @BindView(R.id.toolbar_movie)
-    Toolbar toolbar;
+    @BindView(R.id.rv_movies) RecyclerView recyclerView;
+    @BindView(R.id.display_error) RelativeLayout errorView;
+    @BindView(R.id.pb_load_movies) ProgressBar progressBar;
+    @BindView(R.id.toolbar_movie) Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
