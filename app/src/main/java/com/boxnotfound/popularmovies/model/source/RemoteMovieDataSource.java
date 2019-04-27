@@ -71,8 +71,7 @@ public class RemoteMovieDataSource implements MovieDataSource {
         */
         String apiKey = MovieApiKeyInjector.inject();
         if (apiKey.equals("")) {
-            Log.e(LOG_TAG, "Error: No API Key Set. Developer needs to set TMDB API Key.");
-            return null;
+            throw new IllegalArgumentException("Error: No API Key Set. Developer needs to set TMDB API Key.");
         }
 
         /*
@@ -87,8 +86,6 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
         String url = builder.build().toString();
 
-        Log.v(LOG_TAG, "URL Built: " + url);
-
         return new Request.Builder()
                 .url(url)
                 .build();
@@ -102,17 +99,13 @@ public class RemoteMovieDataSource implements MovieDataSource {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(LOG_TAG, "getResponse onFailure: " + e.toString());
                 client.dispatcher().cancelAll();
-                Log.d(LOG_TAG, "current page number: " + PAGE_NUMBER);
                 callback.onMoviesNotAvailable();
             }
 
             @Override
             public void onResponse(Call call, Response response) {
                 PAGE_NUMBER++;
-                Log.d(LOG_TAG, "onResponse success!");
-                Log.d(LOG_TAG, "current page number: " + PAGE_NUMBER);
                 Gson gson = new Gson();
                 MovieJSONResult result = gson.fromJson(response.body().charStream(), MovieJSONResult.class);
                 List<Movie> movies = result.getResults();
@@ -123,7 +116,6 @@ public class RemoteMovieDataSource implements MovieDataSource {
 
     private static void initializeClient() {
         client = new OkHttpClient();
-        Log.d(LOG_TAG, "default client maxRequests: " + client.dispatcher().getMaxRequests());
         client.dispatcher().setMaxRequests(1);
         client.dispatcher().setIdleCallback(() -> client = null);
     }
@@ -135,7 +127,6 @@ public class RemoteMovieDataSource implements MovieDataSource {
             case RATING:
                 return TMDB_API_TOP_RATED_URL;
             default:
-                Log.e(LOG_TAG, "Error: Unknown SortParameter value: " + sort.toString());
                 throw new IllegalArgumentException("Error: Unknown SortParameter value: " + sort.toString());
         }
     }

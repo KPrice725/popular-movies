@@ -10,7 +10,6 @@ import butterknife.ButterKnife;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -183,17 +182,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                     .error(R.drawable.ic_connection_error_black_24dp)
                     .resize(movieBackdropWidth, movieBackdropHeight)
                     .centerCrop()
-                    .into(movieBackdropIv, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            Log.d(LOG_TAG, "load success! " + backdropPosterPath);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.d(LOG_TAG, "load error! " + backdropPosterPath);
-                        }
-                    });
+                    .into(movieBackdropIv);
         });
     }
 
@@ -205,17 +194,7 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
                     .error(R.drawable.ic_connection_error_black_24dp)
                     .resize(moviePosterWidth, moviePosterHeight)
                     .centerCrop()
-                    .into(moviePosterIv, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            Log.d(LOG_TAG, "load success! " + posterPath);
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.d(LOG_TAG, "load error! " + posterPath);
-                        }
-                    });
+                    .into(moviePosterIv);
         });
     }
 

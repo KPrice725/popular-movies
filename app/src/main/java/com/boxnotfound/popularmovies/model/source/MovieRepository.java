@@ -37,10 +37,8 @@ public class MovieRepository implements MovieDataSource {
     @Override
     public void getCachedMovies(@NonNull LoadMoviesCallback callback) {
         if (cachedMovieList != null && cachedMovieList.size() > 0) {
-            Log.d(LOG_TAG, "Success: We have " + cachedMovieList.size() + " cached movies!");
             callback.onMoviesLoaded(cachedMovieList);
         } else {
-            Log.d(LOG_TAG, "Error: We don't have cached movies!");
             callback.onMoviesNotAvailable();
         }
     }
@@ -89,7 +87,6 @@ public class MovieRepository implements MovieDataSource {
         if (cachedMovieMap.containsKey(id)) {
             return cachedMovieMap.get(id);
         } else {
-            Log.e(LOG_TAG, "Invalid movie id: " + id);
             throw new IllegalArgumentException("Invalid movie id: " + id);
         }
     }

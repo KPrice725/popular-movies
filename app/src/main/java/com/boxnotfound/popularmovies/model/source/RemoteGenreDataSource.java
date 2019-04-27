@@ -58,15 +58,12 @@ public class RemoteGenreDataSource implements GenreDataSource {
         */
         String apiKey = MovieApiKeyInjector.inject();
         if (apiKey.equals("")) {
-            Log.e(LOG_TAG, "Error: No API Key Set. Developer needs to set TMDB API Key.");
             throw new IllegalArgumentException("Error: No API Key Set. Developer needs to set TMDB API Key.");
         }
         HttpUrl.Builder builder = Objects.requireNonNull(HttpUrl.parse(TMDB_API_GENRE_URL)).newBuilder()
                 .addQueryParameter(API_KEY_PARAM, apiKey);
 
         String url = builder.build().toString();
-
-        Log.v(LOG_TAG, "URL Built: " + url);
 
         return new Request.Builder()
                 .url(url)
@@ -75,7 +72,6 @@ public class RemoteGenreDataSource implements GenreDataSource {
 
     private static void initializeClient() {
         client = new OkHttpClient();
-        Log.d(LOG_TAG, "default client maxRequests: " + client.dispatcher().getMaxRequests());
         client.dispatcher().setMaxRequests(1);
         client.dispatcher().setIdleCallback(() -> client = null);
     }
@@ -88,7 +84,6 @@ public class RemoteGenreDataSource implements GenreDataSource {
         client.newCall(request).enqueue(new Callback() {
             @Override
             public void onFailure(Call call, IOException e) {
-                Log.e(LOG_TAG, "getResponse onFailure: " + e.toString());
                 callback.onGenresNotAvailable();
             }
 

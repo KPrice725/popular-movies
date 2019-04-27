@@ -10,7 +10,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -28,7 +27,6 @@ import com.boxnotfound.popularmovies.model.source.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.model.utilities.MoviePosterUtils;
 import com.google.android.material.snackbar.Snackbar;
-import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -57,10 +55,14 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
     private Snackbar errorSnackbar;
 
-    @BindView(R.id.rv_movies) RecyclerView recyclerView;
-    @BindView(R.id.display_error) RelativeLayout errorView;
-    @BindView(R.id.pb_load_movies) ProgressBar progressBar;
-    @BindView(R.id.toolbar_movie) Toolbar toolbar;
+    @BindView(R.id.rv_movies)
+    RecyclerView recyclerView;
+    @BindView(R.id.display_error)
+    RelativeLayout errorView;
+    @BindView(R.id.pb_load_movies)
+    ProgressBar progressBar;
+    @BindView(R.id.toolbar_movie)
+    Toolbar toolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -141,6 +143,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
             return super.onOptionsItemSelected(item);
         }
     }
+
     @Override
     protected void onResume() {
         super.onResume();
@@ -255,23 +258,12 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
 
         @Override
         public void onBindViewHolder(@NonNull final ViewHolder viewHolder, final int position) {
-            Log.d(LOG_TAG, "onBindViewHolder called!");
             final Movie movie = movieList.get(position);
             String posterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
             Picasso.get().load(posterUrl)
                     .resize(layoutManager.getTargetItemWidth(), layoutManager.getTargetItemHeight())
                     .centerCrop()
-                    .into(viewHolder.posterImage, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                            Log.d(LOG_TAG, "Poster for " + movie.getTitle() + " successfully loaded!");
-                        }
-
-                        @Override
-                        public void onError(Exception e) {
-                            Log.d(LOG_TAG, "Poster for " + movie.getTitle() + " not loaded!");
-                        }
-                    });
+                    .into(viewHolder.posterImage);
         }
 
         @Override
@@ -286,7 +278,6 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         public void addMovies(@NonNull final List<Movie> movies) {
             int currentIndex = getItemCount();
             movieList.addAll(movies);
-            Log.d(LOG_TAG, "Current adapter movieList size: " + movieList.size());
             runOnUiThread(() -> notifyItemRangeInserted(currentIndex, movies.size()));
         }
 
