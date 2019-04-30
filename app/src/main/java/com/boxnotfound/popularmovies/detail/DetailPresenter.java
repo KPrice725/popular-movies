@@ -58,45 +58,44 @@ public class DetailPresenter implements DetailContract.Presenter {
     }
 
     @Override
-    public void loadMovie(@NonNull SparseArray<Genre> genreMap) {
+    public void loadMovie(@NonNull final SparseArray<Genre> genreMap) {
         /*
         We receive both the movie and the movie ID from the intent Bundle.  If for some reason
         the Parcelable Movie object passed to us is null, retrieve the movie from the Repository
         by passing it the movie ID.
         */
-        final boolean[] loading = {false};
         if (movie == null) {
-            loading[0] = true;
             movieRepository.getMovieById(movieId, new MovieDataSource.LoadMovieCallback() {
                 @Override
                 public void onMovieLoaded(@NonNull Movie loadedMovie) {
                     movie = loadedMovie;
-                    loading[0] = false;
+                    loadMovie(movie, genreMap);
                 }
 
                 @Override
                 public void onMovieNotAvailable() {
-                    loading[0] = false;
+                    detailView.displayLoadingIndicator(false);
+                    detailView.displayNoMovieDetails();
                 }
             });
+        } else {
+            loadMovie(movie, genreMap);
         }
-        /*
-            In the event that the movieRepository calls on an asynchronous request to load the movie,
-            we want to wait until the movie is loaded before populating the UI.
-        */
-        while (loading[0]) ;
-        if (movie != null) {
-            detailView.displayMovieTitle(movie.getTitle());
-            detailView.displayMovieOriginalTitle(movie.getOriginalTitle());
-            detailView.displayMovieOverview(movie.getOverview());
-            detailView.displayMovieReleaseDate(movie.getReleaseDate());
-            detailView.displayMovieUserRating(movie.getUserRating());
+    }
 
-            String movieBackdropPosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getBackdropPosterPath());
-            detailView.displayMovieBackdropPoster(movieBackdropPosterUrl);
+    private void loadMovie(@NonNull final Movie loadedMovie, @NonNull final SparseArray<Genre> genreMap) {
 
-            String moviePosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(movie.getPosterPath());
-            detailView.displayMoviePoster(moviePosterUrl);
+        detailView.displayMovieTitle(loadedMovie.getTitle());
+        detailView.displayMovieOriginalTitle(loadedMovie.getOriginalTitle());
+        detailView.displayMovieOverview(loadedMovie.getOverview());
+        detailView.displayMovieReleaseDate(loadedMovie.getReleaseDate());
+        detailView.displayMovieUserRating(loadedMovie.getUserRating());
+
+        String movieBackdropPosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(loadedMovie.getBackdropPosterPath());
+        detailView.displayMovieBackdropPoster(movieBackdropPosterUrl);
+
+        String moviePosterUrl = MoviePosterUtils.getLargeMoviePosterUrlPath(loadedMovie.getPosterPath());
+        detailView.displayMoviePoster(moviePosterUrl);
 
             /*
                 For populating the genreNames list, there are two potential options.  In the case of
@@ -104,27 +103,23 @@ public class DetailPresenter implements DetailContract.Presenter {
                 get movie request, the JSON result returns a list of deserialized Genre objects.  Check
                 both of these to attempt to fill the genreNames List.
             */
-            List<String> genreNames = new ArrayList<>();
-            if (genreMap.size() > 0) {
-                List<Integer> genreIds = movie.getGenreIds();
-                List<Genre> genreList = movie.getGenreList();
-                if (genreIds != null) {
-                    for (int i = 0; i < genreIds.size(); i++) {
-                        int genreId = genreIds.get(i);
-                        Genre genre = genreMap.get(genreId);
-                        genreNames.add(genre.getName());
-                    }
-                } else if (genreList != null) {
-                    for (Genre genre : genreList) {
-                        genreNames.add(genre.getName());
-                    }
+        List<String> genreNames = new ArrayList<>();
+        if (genreMap.size() > 0) {
+            List<Integer> genreIds = loadedMovie.getGenreIds();
+            List<Genre> genreList = loadedMovie.getGenreList();
+            if (genreIds != null) {
+                for (int i = 0; i < genreIds.size(); i++) {
+                    int genreId = genreIds.get(i);
+                    Genre genre = genreMap.get(genreId);
+                    genreNames.add(genre.getName());
+                }
+            } else if (genreList != null) {
+                for (Genre genre : genreList) {
+                    genreNames.add(genre.getName());
                 }
             }
-            detailView.displayMovieGenres(genreNames);
-            detailView.displayLoadingIndicator(false);
-        } else {
-            detailView.displayLoadingIndicator(false);
-            detailView.displayNoMovieDetails();
         }
+        detailView.displayMovieGenres(genreNames);
+        detailView.displayLoadingIndicator(false);
     }
 }
