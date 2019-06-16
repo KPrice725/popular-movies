@@ -7,6 +7,7 @@
     <string name="retry">RETRY</string>
     <string name="sort_most_popular">Most Popular</string>
     <string name="sort_highest_rated">Highest Rated</string>
+    <string name="sort_favorite">Favorites</string>
     <string name="content_description_backdrop_poster">Backdrop Poster</string>
     <string name="content_description_movie_poster">Movie Poster</string>
     <string name="content_description_release_date">Release Date</string>
@@ -15,4 +16,8 @@
     <string name="user_rating">%1$.1f/10</string>
     <string name="content_description_genres">Genres</string>
     <string name="overview_header">Overview</string>
+
+    <string name="favorite_movie_icon">Favorite Movie</string>
+    <string name="favorite_movie_added">%1$s added to favorites list!</string>
+    <string name="favorite_movie_removed">%1$s removed from favorites list!</string>
 </resources>
