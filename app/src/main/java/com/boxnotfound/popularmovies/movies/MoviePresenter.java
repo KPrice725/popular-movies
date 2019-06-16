@@ -47,38 +47,58 @@ public class MoviePresenter implements MovieContract.Presenter {
     */
     @Override
     public void refreshMovies() {
-        movieRepository.getCachedMovies(new MovieDataSource.LoadMoviesCallback() {
-            @Override
-            public void onMoviesLoaded(@NonNull List<Movie> movies) {
-                movieView.displayCachedMovies(movies);
-            }
+        if (sortParameter == SortParameters.FAVORITE) {
+            movieRepository.clearMovieCache();
+            movieView.displayClearMovies();
+            loadMovies();
+        } else {
+            movieRepository.getCachedMovies(new MovieDataSource.LoadMoviesCallback() {
+                @Override
+                public void onMoviesLoaded(@NonNull List<Movie> movies) {
+                    movieView.displayCachedMovies(movies);
+                }
 
-            @Override
-            public void onMoviesNotAvailable() {
-                loadMovies();
-            }
-        });
+                @Override
+                public void onMoviesNotAvailable() {
+                    loadMovies();
+                }
+            });
+        }
     }
 
     @Override
     public void loadMovies() {
-        movieView.displayLoadingIndicator(true);
-        movieRepository.getMoreMovies(sortParameter, newSortSelected, new MovieDataSource.LoadMoviesCallback() {
-            @Override
-            public void onMoviesLoaded(@NonNull List<Movie> movies) {
-                movieView.displayLoadingIndicator(false);
-                movieView.displayNewMovies(movies);
-            }
-
-            @Override
-            public void onMoviesNotAvailable() {
-                movieView.displayLoadingIndicator(false);
-                if (movieRepository.getCachedMoviesSize() == 0) {
-                    movieView.displayNoMovies();
+        if (sortParameter == SortParameters.FAVORITE && movieRepository.getCachedMoviesSize() != 0) {
+            movieRepository.getCachedMovies(new MovieDataSource.LoadMoviesCallback() {
+                @Override
+                public void onMoviesLoaded(@NonNull List<Movie> movies) {
+                    movieView.displayCachedMovies(movies);
                 }
-                movieView.displayLoadMoviesError();
-            }
-        });
+
+                @Override
+                public void onMoviesNotAvailable() {
+                    movieView.displayLoadMoviesError();
+                }
+            });
+        } else {
+            movieView.displayLoadingIndicator(true);
+            movieRepository.getMoreMovies(sortParameter, newSortSelected, new MovieDataSource.LoadMoviesCallback() {
+                @Override
+                public void onMoviesLoaded(@NonNull List<Movie> movies) {
+                    movieView.displayLoadingIndicator(false);
+                    movieView.displayNewMovies(movies);
+                }
+
+                @Override
+                public void onMoviesNotAvailable() {
+                    movieView.displayLoadingIndicator(false);
+                    if (movieRepository.getCachedMoviesSize() == 0) {
+                        movieView.displayNoMovies();
+                    }
+                    movieView.displayLoadMoviesError();
+                }
+            });
+        }
     }
 
     @Override
@@ -98,6 +118,23 @@ public class MoviePresenter implements MovieContract.Presenter {
     @Override
     public void openMovieDetails(@NonNull final Movie requestedMovie) {
 //        final long id = requestedMovie.getId();
-        movieView.displayMovieDetailActivity(requestedMovie);
+        if (requestedMovie.getTitle() == null) {
+            movieView.displayLoadingIndicator(true);
+            movieRepository.getMovieById(requestedMovie.getId(), new MovieDataSource.LoadMovieCallback() {
+                @Override
+                public void onMovieLoaded(@NonNull Movie movie) {
+                    movieView.displayLoadingIndicator(false);
+                    movieView.displayMovieDetailActivity(movie);
+                }
+
+                @Override
+                public void onMovieNotAvailable() {
+                    movieView.displayLoadingIndicator(false);
+                    movieView.displayMovieDetailActivity(requestedMovie);
+                }
+            });
+        } else {
+            movieView.displayMovieDetailActivity(requestedMovie);
+        }
     }
 }

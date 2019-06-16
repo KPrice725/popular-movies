@@ -63,6 +63,16 @@ public class RemoteMovieDataSource implements MovieDataSource {
         getJsonFromGetMovieRequest(request, callback);
     }
 
+    @Override
+    public void addMovie(@NonNull Movie movie) {
+
+    }
+
+    @Override
+    public void deleteMovie(@NonNull Movie movie) {
+
+    }
+
     private static @NonNull Request buildGetMoviesRequest(@NonNull final SortParameters sort) {
 
         /*

@@ -18,18 +18,24 @@ public class MovieRepository implements MovieDataSource {
     private static MovieRepository INSTANCE = null;
 
     private final MovieDataSource remoteMovieDataSource;
+    private final MovieDataSource favoriteMovieDataSource;
 
     private Map<Long, Movie> cachedMovieMap;
 
     private ArrayList<Movie> cachedMovieList;
 
-    private MovieRepository(@NonNull MovieDataSource remoteMovieDataSource) {
+    private MovieRepository(@NonNull MovieDataSource remoteMovieDataSource,
+                            @NonNull MovieDataSource favoriteMovieDataSource) {
         this.remoteMovieDataSource = remoteMovieDataSource;
+        this.favoriteMovieDataSource = favoriteMovieDataSource;
+        cachedMovieMap = new LinkedHashMap<>();
+        cachedMovieList = new ArrayList<>();
     }
 
-    public static MovieRepository getInstance(@NonNull MovieDataSource remoteMovieDataSource) {
+    public static MovieRepository getInstance(@NonNull MovieDataSource remoteMovieDataSource,
+                                              @NonNull MovieDataSource favoriteMovieDataSource) {
         if (INSTANCE == null) {
-            INSTANCE = new MovieRepository(remoteMovieDataSource);
+            INSTANCE = new MovieRepository(remoteMovieDataSource, favoriteMovieDataSource);
         }
         return INSTANCE;
     }
@@ -53,18 +59,35 @@ public class MovieRepository implements MovieDataSource {
 
     @Override
     public void getMoreMovies(@NonNull final SortParameters sortParameter, final boolean newSortSelected, @NonNull final LoadMoviesCallback callback) {
-        remoteMovieDataSource.getMoreMovies(sortParameter, newSortSelected, new LoadMoviesCallback() {
-            @Override
-            public void onMoviesLoaded(@NonNull List<Movie> movies) {
-                callback.onMoviesLoaded(movies);
-                cacheMovies(movies);
-            }
+        if (sortParameter == SortParameters.FAVORITE) {
+            if (cachedMovieList != null && cachedMovieList.size() == 0) {
+                favoriteMovieDataSource.getCachedMovies(new LoadMoviesCallback() {
+                    @Override
+                    public void onMoviesLoaded(@NonNull List<Movie> movies) {
+                        callback.onMoviesLoaded(movies);
+                        cacheMovies(movies);
+                    }
 
-            @Override
-            public void onMoviesNotAvailable() {
-                callback.onMoviesNotAvailable();
+                    @Override
+                    public void onMoviesNotAvailable() {
+                        callback.onMoviesNotAvailable();
+                    }
+                });
             }
-        });
+        } else {
+            remoteMovieDataSource.getMoreMovies(sortParameter, newSortSelected, new LoadMoviesCallback() {
+                @Override
+                public void onMoviesLoaded(@NonNull List<Movie> movies) {
+                    callback.onMoviesLoaded(movies);
+                    cacheMovies(movies);
+                }
+
+                @Override
+                public void onMoviesNotAvailable() {
+                    callback.onMoviesNotAvailable();
+                }
+            });
+        }
     }
 
     @Override
@@ -73,25 +96,25 @@ public class MovieRepository implements MovieDataSource {
         First check the cache.  If the movie is not found in the cache, request
         it from the remote data source.
         */
-        cachedMovieMap.remove(movieId);
-        if (cachedMovieMap.containsKey(movieId)) {
-            Movie movie = cachedMovieMap.get(movieId);
-            assert movie != null;
-            callback.onMovieLoaded(movie);
-        } else {
+        Movie movie = cachedMovieMap.get(movieId);
+        if (movie == null || movie.getTitle() == null) {
             remoteMovieDataSource.getMovieById(movieId, callback);
+        } else {
+            callback.onMovieLoaded(movie);
         }
     }
 
+    @Override
+    public void addMovie(@NonNull Movie movie) {
+        favoriteMovieDataSource.addMovie(movie);
+    }
+
+    @Override
+    public void deleteMovie(@NonNull Movie movie) {
+        favoriteMovieDataSource.deleteMovie(movie);
+    }
+
     private void cacheMovies(@NonNull List<Movie> movies) {
-        if (cachedMovieMap == null) {
-            cachedMovieMap = new LinkedHashMap<>();
-        }
-
-        if (cachedMovieList == null) {
-            cachedMovieList = new ArrayList<>();
-        }
-
         for (Movie movie : movies) {
             cachedMovieMap.put(movie.getId(), movie);
         }
@@ -106,6 +129,18 @@ public class MovieRepository implements MovieDataSource {
 
         if (cachedMovieList != null) {
             cachedMovieList.clear();
+        }
+    }
+
+    public void isFavoriteMovie(@NonNull final Movie loadedMovie, @NonNull final LoadMovieCallback callback) {
+        favoriteMovieDataSource.getMovieById(loadedMovie.getId(), callback);
+    }
+
+    public void setFavoriteMovie(Movie movie, boolean favorite) {
+        if (favorite) {
+            favoriteMovieDataSource.addMovie(movie);
+        } else {
+            favoriteMovieDataSource.deleteMovie(movie);
         }
     }
 }
