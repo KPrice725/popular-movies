@@ -16,6 +16,8 @@ public interface DetailContract {
 
         void loadMovie(@NonNull final SparseArray<Genre> genreMap);
 
+        void toggleFavoriteStatus();
+
     }
 
     interface View extends BaseView<Presenter> {
@@ -39,5 +41,7 @@ public interface DetailContract {
         void displayMoviePoster(@NonNull final String posterPath);
 
         void displayNoMovieDetails();
+
+        void displayMovieIsFavorite(final boolean b);
     }
 }

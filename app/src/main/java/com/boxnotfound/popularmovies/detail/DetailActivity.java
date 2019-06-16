@@ -3,7 +3,9 @@ package com.boxnotfound.popularmovies.detail;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.core.widget.NestedScrollView;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 
@@ -11,7 +13,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.content.res.Resources;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
@@ -22,20 +24,20 @@ import android.widget.TextView;
 import com.boxnotfound.popularmovies.R;
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.source.genre.GenreRepository;
+import com.boxnotfound.popularmovies.model.source.movie.LocalFavoriteMovieDataSource;
 import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.genre.RemoteGenreDataSource;
 import com.boxnotfound.popularmovies.model.source.movie.RemoteMovieDataSource;
 import com.boxnotfound.popularmovies.movies.MovieActivity;
 import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.appbar.CollapsingToolbarLayout;
+import com.google.android.material.snackbar.Snackbar;
 import com.squareup.picasso.Picasso;
 
 import java.util.List;
 import java.util.Objects;
 
 public class DetailActivity extends AppCompatActivity implements DetailContract.View {
-
-    private static final String LOG_TAG = DetailActivity.class.getSimpleName();
 
     private DetailContract.Presenter detailPresenter;
 
@@ -44,20 +46,36 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
     private static int movieBackdropWidth;
     private static int movieBackdropHeight;
 
-    @BindView(R.id.iv_movie_backdrop) ImageView movieBackdropIv;
-    @BindView(R.id.iv_detail_poster) ImageView moviePosterIv;
-    @BindView(R.id.toolbar_detail) Toolbar toolbar;
-    @BindView(R.id.app_bar_layout) AppBarLayout layout;
-    @BindView(R.id.collapsing_toolbar_layout) CollapsingToolbarLayout collapsingToolbarLayout;
-    @BindView(R.id.toolbar_detail_title) TextView titleTv;
-    @BindView(R.id.tv_detail_original_title) TextView originalTitleTv;
-    @BindView(R.id.tv_release_date) TextView releaseDateTv;
-    @BindView(R.id.tv_user_rating) TextView userRatingTv;
-    @BindView(R.id.tv_genres) TextView genresTv;
-    @BindView(R.id.tv_overview) TextView overviewTv;
-    @BindView(R.id.pb_load_details) ProgressBar progressBar;
-    @BindView(R.id.details_layout) NestedScrollView detailsLayout;
-    @BindView(R.id.details_error) RelativeLayout errorLayout;
+    private Menu menu;
+
+    @BindView(R.id.iv_movie_backdrop)
+    ImageView movieBackdropIv;
+    @BindView(R.id.iv_detail_poster)
+    ImageView moviePosterIv;
+    @BindView(R.id.toolbar_detail)
+    Toolbar toolbar;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout layout;
+    @BindView(R.id.collapsing_toolbar_layout)
+    CollapsingToolbarLayout collapsingToolbarLayout;
+    @BindView(R.id.toolbar_detail_title)
+    TextView titleTv;
+    @BindView(R.id.tv_detail_original_title)
+    TextView originalTitleTv;
+    @BindView(R.id.tv_release_date)
+    TextView releaseDateTv;
+    @BindView(R.id.tv_user_rating)
+    TextView userRatingTv;
+    @BindView(R.id.tv_genres)
+    TextView genresTv;
+    @BindView(R.id.tv_overview)
+    TextView overviewTv;
+    @BindView(R.id.pb_load_details)
+    ProgressBar progressBar;
+    @BindView(R.id.details_layout)
+    NestedScrollView detailsLayout;
+    @BindView(R.id.details_error)
+    RelativeLayout errorLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -93,21 +111,31 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         setPosterImageSize();
         setBackdropImageSize();
 
-        detailPresenter = new DetailPresenter(MovieRepository.getInstance(RemoteMovieDataSource.getInstance()),
+        detailPresenter = new DetailPresenter(MovieRepository.getInstance(RemoteMovieDataSource.getInstance(), LocalFavoriteMovieDataSource.getInstance(getApplication())),
                 GenreRepository.getInstance(RemoteGenreDataSource.getInstance()), this, movie, movieId);
 
     }
 
     @Override
-    protected void onResume() {
-        super.onResume();
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.menu_favorite_movie, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        this.menu = menu;
         detailPresenter.start();
+        return super.onPrepareOptionsMenu(menu);
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == android.R.id.home) {
             finish();
+            return true;
+        } else if (item.getItemId() == R.id.detail_movie_favorite) {
+            detailPresenter.toggleFavoriteStatus();
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -222,6 +250,20 @@ public class DetailActivity extends AppCompatActivity implements DetailContract.
         runOnUiThread(() -> {
             detailsLayout.setVisibility(View.INVISIBLE);
             errorLayout.setVisibility(View.VISIBLE);
+        });
+    }
+
+    @Override
+    public void displayMovieIsFavorite(boolean isFavorite) {
+        runOnUiThread(() -> {
+            String movieTitle = titleTv.toString();
+            if (isFavorite) {
+                menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_favorite_true_24dp));
+                Snackbar.make(detailsLayout, getString(R.string.favorite_movie_removed, movieTitle), Snackbar.LENGTH_SHORT);
+            } else {
+                menu.getItem(0).setIcon(ContextCompat.getDrawable(this, R.drawable.ic_favorite_false_24dp));
+                Snackbar.make(detailsLayout, getString(R.string.favorite_movie_added, movieTitle), Snackbar.LENGTH_SHORT);
+            }
         });
     }
 

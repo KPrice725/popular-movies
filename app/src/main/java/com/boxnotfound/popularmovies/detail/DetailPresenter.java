@@ -64,7 +64,7 @@ public class DetailPresenter implements DetailContract.Presenter {
         the Parcelable Movie object passed to us is null, retrieve the movie from the Repository
         by passing it the movie ID.
         */
-        if (movie == null) {
+        if (movie == null || movie.getTitle() == null || movie.getTitle().isEmpty()) {
             movieRepository.getMovieById(movieId, new MovieDataSource.LoadMovieCallback() {
                 @Override
                 public void onMovieLoaded(@NonNull Movie loadedMovie) {
@@ -85,6 +85,17 @@ public class DetailPresenter implements DetailContract.Presenter {
 
     private void loadMovie(@NonNull final Movie loadedMovie, @NonNull final SparseArray<Genre> genreMap) {
 
+        movieRepository.isFavoriteMovie(loadedMovie, new MovieDataSource.LoadMovieCallback() {
+            @Override
+            public void onMovieLoaded(@NonNull Movie movie) {
+                detailView.displayMovieIsFavorite(true);
+            }
+
+            @Override
+            public void onMovieNotAvailable() {
+                detailView.displayMovieIsFavorite(false);
+            }
+        });
         detailView.displayMovieTitle(loadedMovie.getTitle());
         detailView.displayMovieOriginalTitle(loadedMovie.getOriginalTitle());
         detailView.displayMovieOverview(loadedMovie.getOverview());
@@ -121,5 +132,24 @@ public class DetailPresenter implements DetailContract.Presenter {
         }
         detailView.displayMovieGenres(genreNames);
         detailView.displayLoadingIndicator(false);
+    }
+
+    @Override
+    public void toggleFavoriteStatus() {
+        movieRepository.isFavoriteMovie(movie, new MovieDataSource.LoadMovieCallback() {
+            @Override
+            public void onMovieLoaded(@NonNull Movie m) {
+                // this is a favorite movie currently, remove it from the favorites
+                movieRepository.setFavoriteMovie(movie, false);
+                detailView.displayMovieIsFavorite(false);
+            }
+
+            @Override
+            public void onMovieNotAvailable() {
+                // this is note a favorite movie, add it to the favorites
+                movieRepository.setFavoriteMovie(movie, true);
+                detailView.displayMovieIsFavorite(true);
+            }
+        });
     }
 }
