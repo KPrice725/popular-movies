@@ -4,6 +4,12 @@ import android.os.Parcel;
 import android.os.Parcelable;
 import android.util.SparseArray;
 
+import androidx.annotation.NonNull;
+import androidx.room.ColumnInfo;
+import androidx.room.Entity;
+import androidx.room.Ignore;
+import androidx.room.PrimaryKey;
+
 import com.google.gson.annotations.SerializedName;
 
 import java.io.Serializable;
@@ -13,6 +19,7 @@ import java.util.List;
 /*
 The Movie Entity is Parcelable to allow ease of transfer between the MovieActivity and DetailActivity
 */
+@Entity(tableName = "favorite_movie_table")
 public class Movie implements Parcelable {
 
     /*
@@ -21,16 +28,22 @@ public class Movie implements Parcelable {
         the MovieJSONResult object's List<Movie> is populated from the returned
         "results" JSON array via Gson.
     */
-    @SerializedName("id") private long id;
-    @SerializedName("title") private String title;
-    @SerializedName("original_title") private String originalTitle;
-    @SerializedName("overview") private String overview;
-    @SerializedName("release_date") private String releaseDate;
-    @SerializedName("vote_average") private double userRating;
-    @SerializedName("poster_path") private String posterPath;
-    @SerializedName("backdrop_path") private String backdropPosterPath;
-    @SerializedName("genre_ids") private List<Integer> genreIds;
-    @SerializedName("genres") private List<Genre> genreList;
+    @SerializedName("id") @PrimaryKey private long id;
+    @SerializedName("title") @Ignore private String title;
+    @SerializedName("original_title") @Ignore private String originalTitle;
+    @SerializedName("overview") @Ignore private String overview;
+    @SerializedName("release_date") @Ignore private String releaseDate;
+    @SerializedName("vote_average") @Ignore private double userRating;
+    @SerializedName("poster_path") @ColumnInfo(name = "poster_path") private String posterPath;
+    @SerializedName("backdrop_path") @Ignore private String backdropPosterPath;
+    @SerializedName("genre_ids") @Ignore private List<Integer> genreIds;
+    @SerializedName("genres") @Ignore private List<Genre> genreList;
+
+    // Constructor for Favorite Movies Table movies
+    public Movie(final long id, @NonNull final String posterPath) {
+        this.id = id;
+        this.posterPath = posterPath;
+    }
 
     public String getTitle() {
         return title;
