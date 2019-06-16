@@ -2,7 +2,9 @@ package com.boxnotfound.popularmovies.model;
 
 import com.google.gson.annotations.SerializedName;
 
-public class Genre {
+import java.io.Serializable;
+
+public class Genre implements Serializable {
 
     @SerializedName("id") private int id;
     @SerializedName("name") private String name;
