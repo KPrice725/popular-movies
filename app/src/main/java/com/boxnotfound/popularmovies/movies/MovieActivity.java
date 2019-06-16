@@ -19,6 +19,7 @@ import com.boxnotfound.popularmovies.R;
 import com.boxnotfound.popularmovies.detail.DetailActivity;
 import com.boxnotfound.popularmovies.model.Movie;
 import com.boxnotfound.popularmovies.model.SortParameters;
+import com.boxnotfound.popularmovies.model.source.movie.LocalFavoriteMovieDataSource;
 import com.boxnotfound.popularmovies.model.source.movie.MovieRepository;
 import com.boxnotfound.popularmovies.model.source.movie.RemoteMovieDataSource;
 import com.google.android.material.snackbar.Snackbar;
@@ -63,8 +64,7 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
         setSupportActionBar(toolbar);
         getWindow().setStatusBarColor(ContextCompat.getColor(this, R.color.colorPrimaryDark));
         moviePresenter = new MoviePresenter(
-                MovieRepository.getInstance(RemoteMovieDataSource.getInstance()),
-                this);
+                MovieRepository.getInstance(RemoteMovieDataSource.getInstance(), LocalFavoriteMovieDataSource.getInstance(getApplication())), this);
         recyclerView = findViewById(R.id.rv_movies);
         int screenWidthInPx = Resources.getSystem().getDisplayMetrics().widthPixels;
         layoutManager = new MovieGridLayoutManager(this, screenWidthInPx);
@@ -125,6 +125,10 @@ public class MovieActivity extends AppCompatActivity implements MovieContract.Vi
                 case R.id.sort_rating:
                     selected = id;
                     moviePresenter.setSortParameter(SortParameters.RATING);
+                    return true;
+                case R.id.sort_favorite:
+                    selected = id;
+                    moviePresenter.setSortParameter(SortParameters.FAVORITE);
                     return true;
                 default:
                     return super.onOptionsItemSelected(item);
