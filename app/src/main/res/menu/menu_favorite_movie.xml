@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".movies.DetailActivity">
+    <item android:id="@+id/detail_movie_favorite"
+        android:title="@string/favorite_movie_icon"
+        android:icon="@drawable/ic_favorite_false_24dp"
+        app:showAsAction="always"/>
+</menu>
